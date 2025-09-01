@@ -1,35 +1,32 @@
 import os
 import psycopg2
+from urllib.parse import urlparse
 def main():
     conn = None
     try:
+        database_url = os.environ.get("DATABASE_URL")
+        if not database_url:
+            raise RuntimeError("DATABASE_URL not set in environment")
+        result = urlparse(database_url)
         conn = psycopg2.connect(
-            host=os.environ["DB_HOST"],
-            dbname=os.environ["DB_NAME"],
-            user=os.environ["DB_USER"],
-            password=os.environ["DB_PASSWORD"],
-            port=os.environ.get("DB_PORT", 5432),
-            sslmode="require"
+            dbname=result.path[1:],
+            user=result.username,
+            password=result.password,
+            host=result.hostname,
+            port=result.port,
+            sslmode="require",
         )
         cur = conn.cursor()
-        # === USERS ===
         print("\n=== USERS ===")
-        # Try to include token if it exists
         try:
-            cur.execute("SELECT id, email, name, token FROM users ORDER BY id ASC;")
-            for row in cur.fetchall():
-                print(f"ID={row[0]}, Email={row[1]}, Name={row[2]}, Token={row[3]}")
-        except Exception:
-            # fallback if no token column
-            conn.rollback()
             cur.execute("SELECT id, email, name FROM users ORDER BY id ASC;")
             for row in cur.fetchall():
                 print(f"ID={row[0]}, Email={row[1]}, Name={row[2]}")
-        # === MATCHES ===
+        except Exception as e:
+            print(f"Could not fetch users: {e}")
+            conn.rollback()
         print("\n=== MATCHES ===")
-        table_names = ["game_match", "game_matches"]
-        found = False
-        for tbl in table_names:
+        for tbl in ["game_match", "game_matches"]:
             try:
                 cur.execute(
                     f"SELECT id, stake_amount, status, p1_user_id, p2_user_id "
@@ -38,13 +35,10 @@ def main():
                 rows = cur.fetchall()
                 for row in rows:
                     print(f"ID={row[0]}, Stake={row[1]}, Status={row[2]}, P1={row[3]}, P2={row[4]}")
-                found = True
                 break
             except Exception as e:
-                conn.rollback()
                 print(f"Tried {tbl}: {e}")
-        if not found:
-            print("No match table found (tried game_match and game_matches).")
+                conn.rollback()
         cur.close()
     except Exception as e:
         print(f"DB Error: {e}")
@@ -53,4 +47,8 @@ def main():
             conn.close()
 if __name__ == "__main__":
     main()
+
+
+
+
 
