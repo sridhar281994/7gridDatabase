@@ -2,7 +2,6 @@ import os
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from datetime import datetime, timedelta
-# --- Database URL from env (Render Postgres) ---
 DATABASE_URL = os.getenv("DATABASE_URL")
 def main():
     if not DATABASE_URL:
@@ -12,21 +11,21 @@ def main():
         conn = psycopg2.connect(DATABASE_URL, sslmode="require")
         cur = conn.cursor(cursor_factory=RealDictCursor)
         # --- 1. Delete invalid WAITING matches (p1_user_id is NULL) ---
-        cur.execute("SELECT id FROM game_matches WHERE status='waiting' AND p1_user_id IS NULL;")
+        cur.execute("SELECT id FROM game_matches WHERE status='WAITING' AND p1_user_id IS NULL;")
         bad_matches = cur.fetchall()
         if bad_matches:
             print(f":warning: Found {len(bad_matches)} invalid WAITING matches (p1_user_id=NULL). Deleting...")
-            cur.execute("DELETE FROM game_matches WHERE status='waiting' AND p1_user_id IS NULL;")
+            cur.execute("DELETE FROM game_matches WHERE status='WAITING' AND p1_user_id IS NULL;")
             conn.commit()
         else:
             print(":white_check_mark: No invalid WAITING matches.")
         # --- 2. Delete stale ACTIVE matches (>30 mins old) ---
         cutoff = datetime.utcnow() - timedelta(minutes=30)
-        cur.execute("SELECT id FROM game_matches WHERE status='active' AND created_at < %s;", (cutoff,))
+        cur.execute("SELECT id FROM game_matches WHERE status='ACTIVE' AND created_at < %s;", (cutoff,))
         stale_matches = cur.fetchall()
         if stale_matches:
             print(f"⚠️ Found {len(stale_matches)} stale ACTIVE matches (>30 mins). Deleting...")
-            cur.execute("DELETE FROM game_matches WHERE status='active' AND created_at < %s;", (cutoff,))
+            cur.execute("DELETE FROM game_matches WHERE status='ACTIVE' AND created_at < %s;", (cutoff,))
             conn.commit()
         else:
             print(":white_check_mark: No stale ACTIVE matches.")
