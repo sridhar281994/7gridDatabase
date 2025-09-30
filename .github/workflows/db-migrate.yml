@@ -1,0 +1,21 @@
+name: DB Migration
+
+on:
+  workflow_dispatch: # run manually from GitHub Actions tab
+  push:
+    branches:
+      - main # or your deploy branch
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Run SQL migration on Render DB
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          echo "Running refundable column migration..."
+          psql "$DATABASE_URL" -f scripts/20250930_add_refundable.sql
