@@ -1,7 +1,2 @@
--- Add refundable column if it does not exist
-ALTER TABLE matches
-ADD COLUMN IF NOT EXISTS refundable BOOLEAN NOT NULL DEFAULT true;
--- Backfill existing rows
-UPDATE matches
-SET refundable = true
-WHERE refundable IS NULL;
+-- Add abandoned state to match status enum
+ALTER TYPE matchstatus ADD VALUE IF NOT EXISTS 'abandoned';
