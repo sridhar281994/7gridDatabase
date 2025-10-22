@@ -1,21 +1,25 @@
-name: DB Migration
+name: Database Schema Migration
 
 on:
-  workflow_dispatch: # run manually from GitHub Actions tab
+  workflow_dispatch:
   push:
     branches:
-      - main # or your deploy branch
+      - main
+      - master
 
 jobs:
   migrate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run SQL migration on Render DB
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Run DB migration script
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          echo "Running refundable column migration..."
-          psql "$DATABASE_URL" -f scripts/20250930_add_refundable.sql
+          chmod +x scripts/db_migrate.sh
+          ./scripts/db_migrate.sh
