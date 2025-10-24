@@ -2,33 +2,34 @@ import os
 from sqlalchemy import create_engine, text
 
 DATABASE_URL = os.getenv("DATABASE_URL")
+
 if not DATABASE_URL:
-    raise SystemExit("❌ DATABASE_URL not set")
+    raise RuntimeError("❌ DATABASE_URL not set in environment")
 
-engine = create_engine(DATABASE_URL, echo=True, future=True)
+engine = create_engine(DATABASE_URL)
 
-print(">>> Seeding base stages ₹4 / ₹8 / ₹12...")
+with engine.connect() as conn:
+    print(">>> Seeding stake data...")
 
-with engine.begin() as conn:
-    # Ensure stakes table exists
+    # Drop old stake data (optional)
+    conn.execute(text("DELETE FROM stakes"))
+
+    # Insert all 4 stages (Free, ₹4, ₹8, ₹12)
     conn.execute(text("""
-    CREATE TABLE IF NOT EXISTS stakes (
-        id SERIAL PRIMARY KEY,
-        stake_amount INTEGER UNIQUE NOT NULL,
-        entry_fee INTEGER NOT NULL,
-        winner_payout INTEGER NOT NULL,
-        label VARCHAR(50) NOT NULL
-    );
+        INSERT INTO stakes (stake_amount, entry_fee, winner_payout, label)
+        VALUES
+            (0, 0, 0, 'Free Play'),
+            (4, 2, 3, '₹4 Stage'),
+            (8, 4, 6, '₹8 Stage'),
+            (12, 6, 9, '₹12 Stage');
     """))
 
-    # 🧩 Base stake rules (used for both 2P and 3P)
-    conn.execute(text("""
-    INSERT INTO stakes (stake_amount, entry_fee, winner_payout, label)
-    VALUES
-        (4, 2, 3, '₹4 Stage'),
-        (8, 4, 6, '₹8 Stage'),
-        (12, 6, 9, '₹12 Stage')
-    ON CONFLICT (stake_amount) DO NOTHING;
-    """))
+    conn.commit()
 
-print("✅ Base stages seeded successfully!")
+    # Confirm seeded
+    rows = conn.execute(text("SELECT stake_amount, label FROM stakes ORDER BY stake_amount ASC")).fetchall()
+    print("✅ Seeded stakes:")
+    for r in rows:
+        print(f"   - {r.label} (stake {r.stake_amount})")
+
+print("✅ Done! Database now has 4 stages.")
