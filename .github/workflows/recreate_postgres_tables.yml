@@ -1,0 +1,22 @@
+name: Recreate PostgreSQL Tables
+
+on:
+  workflow_dispatch:
+
+jobs:
+  recreate-db:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Run schema migration script
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          echo "Connecting to PostgreSQL and recreating tables..."
+          bash scripts/recreate_tables.sh
