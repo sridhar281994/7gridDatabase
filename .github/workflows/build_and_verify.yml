@@ -26,4 +26,4 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           echo ">>> Running database migration..."
-          python migrate_db.py
+          python scripts/migrate_db.py
