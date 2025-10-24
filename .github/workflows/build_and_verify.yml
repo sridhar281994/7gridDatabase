@@ -24,16 +24,35 @@ jobs:
       - name: Run DB Migration
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          PYTHONPATH: ${{ github.workspace }}   # ✅ ensures imports work
         run: |
+          echo ">>> Running database migration..."
           python - <<'PYCODE'
           import os
+          import sys
           from sqlalchemy import create_engine
-          from database import Base
-          from models import User, GameMatch, WalletTransaction, OTP, Stake
+          from sqlalchemy.exc import SQLAlchemyError
 
-          print("🔗 Connecting to database...")
-          engine = create_engine(os.environ["DATABASE_URL"])
-          print("✅ Creating all tables if not exist...")
-          Base.metadata.create_all(engine)
-          print("🎉 Migration complete. Tables synced with models.")
+          sys.path.append(os.getcwd())
+
+          try:
+              from database import Base
+              from models import User, GameMatch, WalletTransaction, OTP, Stake
+          except ModuleNotFoundError as e:
+              print(f"[ERROR] Missing module: {e}")
+              sys.exit(1)
+
+          db_url = os.environ["DATABASE_URL"]
+          print(f"🔗 Connecting to database... {db_url.split('@')[-1]}")
+          engine = create_engine(db_url, echo=False)
+
+          try:
+              Base.metadata.create_all(engine)
+              print("✅ All tables created successfully:")
+              for t in Base.metadata.tables.keys():
+                  print(f"   • {t}")
+              print("🎉 Migration complete.")
+          except SQLAlchemyError as e:
+              print(f"[ERROR] Migration failed: {e}")
+              sys.exit(1)
           PYCODE
