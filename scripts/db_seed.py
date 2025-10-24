@@ -2,7 +2,6 @@ import os
 from sqlalchemy import create_engine, text
 
 DATABASE_URL = os.getenv("DATABASE_URL")
-
 if not DATABASE_URL:
     raise RuntimeError("❌ DATABASE_URL not set in environment")
 
@@ -11,10 +10,10 @@ engine = create_engine(DATABASE_URL)
 with engine.connect() as conn:
     print(">>> Seeding stake data...")
 
-    # Drop old stake data (optional)
+    # Clear existing stakes
     conn.execute(text("DELETE FROM stakes"))
 
-    # Insert all 4 stages (Free, ₹4, ₹8, ₹12)
+    # ✅ Insert 4 standard stages (Free Play + Paid)
     conn.execute(text("""
         INSERT INTO stakes (stake_amount, entry_fee, winner_payout, label)
         VALUES
@@ -23,7 +22,6 @@ with engine.connect() as conn:
             (8, 4, 6, '₹8 Stage'),
             (12, 6, 9, '₹12 Stage');
     """))
-
     conn.commit()
 
     # Confirm seeded
@@ -32,4 +30,4 @@ with engine.connect() as conn:
     for r in rows:
         print(f"   - {r.label} (stake {r.stake_amount})")
 
-print("✅ Done! Database now has 4 stages.")
+print("✅ Done! Database now has Free Play and paid stages.")
