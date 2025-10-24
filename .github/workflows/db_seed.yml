@@ -7,18 +7,18 @@ jobs:
   seed:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: 3.12
 
-      - name: Install SQLAlchemy
+      - name: Install dependencies
         run: pip install sqlalchemy psycopg2-binary
 
-      - name: Run DB Seed
+      - name: Run DB Seed Script
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: python scripts/db_seed.py
