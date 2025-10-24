@@ -1,9 +1,5 @@
-backend/
- ├── models.py
- ├── database.py   ✅ (just added)
-scripts/
- ├── db_migrate.py
-.github/
- └── workflows/
-     └── db_migrate.yml
-requirements.txt
+# backend/database.py
+from sqlalchemy.orm import declarative_base
+
+# ✅ Defines Base used by models.py
+Base = declarative_base()
