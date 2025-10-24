@@ -21,4 +21,4 @@ jobs:
       - name: Run DB Seed Script
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: python scripts/db_seed.py
+        run: python scripts/fix_name_column.py
