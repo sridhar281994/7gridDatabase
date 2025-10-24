@@ -3,9 +3,6 @@ scripts/fix_missing_names.py
 ----------------------------
 One-time script to fill missing or blank 'name' fields in the users table
 based on the email prefix (before '@').
-
-Usage:
-    python scripts/fix_missing_names.py
 """
 
 from sqlalchemy import create_engine, text
@@ -38,6 +35,9 @@ with engine.begin() as conn:
     rows = conn.execute(text("SELECT id, phone, email, name FROM users ORDER BY id LIMIT 10;")).fetchall()
     print("\n🧾 Sample users after update:")
     for r in rows:
-        print(dict(r))
+        try:
+            print(dict(r._mapping))  # ✅ works across SQLAlchemy 1.4 and 2.0+
+        except Exception:
+            print(r)
 
 print("\n🎉 Done! All users without names now have readable defaults.")
