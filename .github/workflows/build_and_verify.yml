@@ -6,42 +6,24 @@ on:
 jobs:
   migrate:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"  # ✅ psycopg2 compatible
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install sqlalchemy psycopg2-binary bcrypt passlib[bcrypt]
+          pip install -r requirements.txt
 
-      - name: Ensure database.py exists
-        run: |
-          if [ ! -f database.py ]; then
-            echo "Creating database.py ..."
-            cat <<'PY' > database.py
-from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
-import os
-
-DATABASE_URL = os.getenv("DATABASE_URL")
-if not DATABASE_URL:
-    raise RuntimeError("DATABASE_URL not set")
-
-engine = create_engine(DATABASE_URL, pool_pre_ping=True)
-SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
-Base = declarative_base()
-PY
-          fi
-
-      - name: Run Migration Script
+      - name: Run migration
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          echo ">>> Running migration..."
+          echo ">>> Running database migration..."
           python migrate_db.py
