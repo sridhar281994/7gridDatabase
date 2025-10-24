@@ -2,22 +2,40 @@
 import os
 import sys
 from sqlalchemy import create_engine
+from sqlalchemy.exc import SQLAlchemyError
 
-# --- Ensure we can import models/database from repo root ---
+# ✅ Add project root path
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if ROOT_DIR not in sys.path:
-    sys.path.append(ROOT_DIR)
+    sys.path.insert(0, ROOT_DIR)
 
-from models import Base  # noqa
-from database import Base as DBBase  # just in case
+print(f"[DEBUG] Using root path: {ROOT_DIR}")
+
+try:
+    from models import Base
+    from models import User, OTP, GameMatch, WalletTransaction, Stake
+except ModuleNotFoundError as e:
+    print(f"❌ Import error: {e}")
+    sys.exit(1)
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
-    raise SystemExit("❌ DATABASE_URL not found in environment variables")
+    print("❌ DATABASE_URL not found in environment variables.")
+    sys.exit(1)
 
-print(f"🗃️  Connecting to database: {DATABASE_URL}")
+print(f"🗄️ Connecting to {DATABASE_URL}")
+
 engine = create_engine(DATABASE_URL, echo=True, future=True)
 
-print("🧱 Creating all tables from models...")
-Base.metadata.create_all(bind=engine)
-print("✅ Migration complete — all tables are up to date.")
+try:
+    Base.metadata.create_all(bind=engine)
+    print("✅ Migration complete. All tables are now synced.")
+    print("📋 Tables created:")
+    for t in Base.metadata.tables.keys():
+        print(f" - {t}")
+except SQLAlchemyError as e:
+    print(f"❌ SQLAlchemy error: {e}")
+    sys.exit(1)
+except Exception as e:
+    print(f"❌ Unexpected error: {e}")
+    sys.exit(1)
