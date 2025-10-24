@@ -1,0 +1,26 @@
+name: PostgreSQL Table Migration
+
+on:
+  workflow_dispatch:    # allows manual trigger
+  push:
+    branches:
+      - main            # runs automatically when you push to main
+
+jobs:
+  migrate-db:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Run Migration Script
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          chmod +x scripts/migrate_db.sh
+          bash scripts/migrate_db.sh
