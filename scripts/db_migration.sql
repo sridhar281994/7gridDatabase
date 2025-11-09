@@ -1,49 +1,69 @@
--- =========================================
--- DATABASE MIGRATION SCRIPT
--- =========================================
+-- ========================================
+-- 7GRID GameMatch Enhancement Migration
+-- Adds fields for dynamic player tracking
+-- ========================================
 
-CREATE TYPE match_status AS ENUM ('WAITING', 'ACTIVE', 'FINISHED');
+BEGIN;
 
+-- 1. Create type if missing
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'matchstatus') THEN
+        CREATE TYPE matchstatus AS ENUM ('WAITING', 'ACTIVE', 'FINISHED');
+    END IF;
+END
+$$;
+
+-- 2. Ensure users table exists
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
-    phone VARCHAR(20) UNIQUE,
-    name VARCHAR(100),
-    upi_id VARCHAR(100),
-    wallet_points INTEGER DEFAULT 0,
-    created_at TIMESTAMP DEFAULT NOW()
+    name TEXT,
+    phone TEXT,
+    wallet_balance NUMERIC DEFAULT 0
 );
 
+-- 3. Ensure game_matches table exists
 CREATE TABLE IF NOT EXISTS game_matches (
     id SERIAL PRIMARY KEY,
-    p1_user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    p2_user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    p3_user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    current_turn INTEGER DEFAULT 0,
-    last_roll INTEGER,
-    status match_status DEFAULT 'WAITING',
-    forfeit_ids INTEGER[] DEFAULT '{}',
-    active_player_count INTEGER DEFAULT 0,
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
+    p1_user_id INT,
+    p2_user_id INT,
+    p3_user_id INT,
+    stake_amount INT DEFAULT 0,
+    num_players INT DEFAULT 2,
+    current_turn INT DEFAULT 0,
+    last_roll INT,
+    status matchstatus DEFAULT 'WAITING',
+    winner_user_id INT,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    finished_at TIMESTAMPTZ,
+    forfeit_ids INT[],
+    active_player_count INT DEFAULT 0
 );
 
--- Ensure consistency and add columns if missing
-ALTER TABLE game_matches ADD COLUMN IF NOT EXISTS forfeit_ids INTEGER[] DEFAULT '{}';
-ALTER TABLE game_matches ADD COLUMN IF NOT EXISTS active_player_count INTEGER DEFAULT 0;
+-- 4. Add missing columns safely
+ALTER TABLE game_matches ADD COLUMN IF NOT EXISTS forfeit_ids INT[];
+ALTER TABLE game_matches ADD COLUMN IF NOT EXISTS active_player_count INT DEFAULT 0;
 
--- Trigger for updated timestamp
-CREATE OR REPLACE FUNCTION update_modified_column()
-RETURNS TRIGGER AS $$
+-- 5. Add trigger to auto-update modified time
+DO $$
 BEGIN
-  NEW.updated_at = NOW();
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+    IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_game_matches_modtime') THEN
+        CREATE OR REPLACE FUNCTION update_modtime_column()
+        RETURNS TRIGGER AS $$
+        BEGIN
+            NEW.finished_at = NOW();
+            RETURN NEW;
+        END;
+        $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS update_game_matches_modtime ON game_matches;
-CREATE TRIGGER update_game_matches_modtime
-BEFORE UPDATE ON game_matches
-FOR EACH ROW
-EXECUTE FUNCTION update_modified_column();
+        CREATE TRIGGER update_game_matches_modtime
+        BEFORE UPDATE ON game_matches
+        FOR EACH ROW
+        EXECUTE FUNCTION update_modtime_column();
+    END IF;
+END
+$$;
+
+COMMIT;
 
 SELECT '✅ Migration executed successfully' AS status;
