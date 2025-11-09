@@ -1,23 +1,65 @@
-name: Fix Missing Names
+name: Database Migration
 
 on:
   workflow_dispatch:
 
 jobs:
-  fix:
+  migrate:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.12"
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
 
-      - name: Install dependencies
-        run: pip install sqlalchemy psycopg2-binary
-
-      - name: Run fix script
+      - name: Apply schema migration
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: python scripts/fix_missing_names.py
+        run: |
+          echo "Applying database migration..."
+          echo "$MIGRATION_SQL" > migration.sql
+          psql "$DATABASE_URL" -f migration.sql
+        shell: bash
+        env:
+          MIGRATION_SQL: |
+            -- Extend game_matches table
+            ALTER TABLE game_matches
+            ADD COLUMN IF NOT EXISTS num_players INT DEFAULT 2,
+            ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'waiting';
+
+            -- Create match_players table
+            CREATE TABLE IF NOT EXISTS match_players (
+                id SERIAL PRIMARY KEY,
+                match_id INT REFERENCES game_matches(id) ON DELETE CASCADE,
+                user_id INT REFERENCES users(id) ON DELETE CASCADE,
+                slot_index INT NOT NULL,
+                active BOOLEAN DEFAULT TRUE,
+                joined_at TIMESTAMP DEFAULT NOW(),
+                left_at TIMESTAMP
+            );
+
+            -- Populate match_players table from existing data
+            INSERT INTO match_players (match_id, user_id, slot_index)
+            SELECT id, p1_user_id, 0 FROM game_matches WHERE p1_user_id IS NOT NULL;
+
+            INSERT INTO match_players (match_id, user_id, slot_index)
+            SELECT id, p2_user_id, 1 FROM game_matches WHERE p2_user_id IS NOT NULL;
+
+            INSERT INTO match_players (match_id, user_id, slot_index)
+            SELECT id, p3_user_id, 2 FROM game_matches WHERE p3_user_id IS NOT NULL;
+
+            -- Create helper function
+            CREATE OR REPLACE FUNCTION get_active_players(mid INT)
+            RETURNS TABLE(user_id INT, slot_index INT) AS $$
+            BEGIN
+                RETURN QUERY
+                SELECT user_id, slot_index
+                FROM match_players
+                WHERE match_id = mid AND active = TRUE
+                ORDER BY slot_index;
+            END;
+            $$ LANGUAGE plpgsql;
+
+          echo "Migration complete ✅"
