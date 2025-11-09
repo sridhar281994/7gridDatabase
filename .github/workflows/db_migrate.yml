@@ -1,10 +1,7 @@
-name: Database Migration
+name: Run Database Migration
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 jobs:
   migrate:
@@ -16,15 +13,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run database migration
+      - name: Ensure scripts directory
+        run: mkdir -p scripts
+
+      - name: Run migration
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           echo "Running migration..."
-          mkdir -p scripts
-          if [ ! -f scripts/db_migration.sql ]; then
-            echo "❌ Missing migration script"
-            exit 1
-          fi
           psql "$DATABASE_URL" -f scripts/db_migration.sql
           echo "✅ Migration complete"
