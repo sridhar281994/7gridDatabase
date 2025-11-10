@@ -1,0 +1,8 @@
+ id | stake_amount | entry_fee | winner_payout |   label   
+----+--------------+-----------+---------------+-----------
+ 10 |            0 |         0 |             0 | Free Play
+ 11 |            4 |         2 |             3 | ₹4 Stage
+ 12 |            8 |         4 |             6 | ₹8 Stage
+ 13 |           12 |         6 |             9 | ₹12 Stage
+(4 rows)
+

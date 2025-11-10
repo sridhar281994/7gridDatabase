@@ -1,0 +1,4 @@
+ id | p1_user_id | p2_user_id | p3_user_id | current_turn | last_roll | status | forfeit_ids | active_player_count | created_at | updated_at 
+----+------------+------------+------------+--------------+-----------+--------+-------------+---------------------+------------+------------
+(0 rows)
+

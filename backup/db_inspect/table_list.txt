@@ -1,0 +1,6 @@
+public|game_matches|table|spin_db_new_user
+public|matches|table|spin_db_new_user
+public|otps|table|spin_db_new_user
+public|stakes|table|spin_db_new_user
+public|users|table|spin_db_new_user
+public|wallet_transactions|table|spin_db_new_user
