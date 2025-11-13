@@ -1,8 +1,8 @@
- id | stake_amount | entry_fee | winner_payout |   label   
-----+--------------+-----------+---------------+-----------
- 10 |            0 |         0 |             0 | Free Play
- 11 |            4 |         2 |             3 | ₹4 Stage
- 12 |            8 |         4 |             6 | ₹8 Stage
- 13 |           12 |         6 |             9 | ₹12 Stage
+ id | stake_amount | entry_fee | winner_payout |   label    
+----+--------------+-----------+---------------+------------
+  1 |            2 |         2 |             4 | Dual Rush
+  2 |            4 |         4 |             8 | QUAD Crush
+  3 |            6 |         6 |            12 | siXth Gear
+  5 |            0 |         0 |             0 | Free Play
 (4 rows)
 

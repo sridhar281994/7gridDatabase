@@ -24,5 +24,12 @@
  30 |       2 |   0.00 | WITHDRAW | SUCCESS | Match #145 Loss                          | 2025-11-10 10:39:14.069887+00 | d1f3ad29-f949-4d48-9a09-996fd0d6ce77
  31 |       3 |   0.00 | WIN      | SUCCESS | Match #145 Win                           | 2025-11-10 10:39:14.235803+00 | 7cab3794-bc42-4b1b-a923-2c3d50bbe724
  32 |       0 |   0.00 | FEE      | SUCCESS | Match #145 System Fee (Virtual Merchant) | 2025-11-10 10:39:14.422322+00 | 70c53cfc-8bf8-404f-9564-d61b6eaa3f77
-(24 rows)
+ 33 |       2 |   0.00 | WITHDRAW | SUCCESS | Match #153 Loss                          | 2025-11-12 14:37:01.045843+00 | 2931d92a-fdf2-445d-9f36-ca82b1c34ad7
+ 34 |       1 |   0.00 | WIN      | SUCCESS | Match #153 Win                           | 2025-11-12 14:37:01.226262+00 | ec6bbd75-915c-4cf5-b608-11c48885d5ab
+ 35 |       0 |   0.00 | FEE      | SUCCESS | Match #153 System Fee (Virtual Merchant) | 2025-11-12 14:37:01.393007+00 | 8dcc81d4-7231-4175-b9a4-6c83aa00cdfe
+ 36 |       1 |  -1.00 | WITHDRAW | SUCCESS | Match #156 Loss                          | 2025-11-12 15:58:54.15734+00  | cc7baf8e-a2e1-4d9c-bded-cd2cf7b5ef35
+ 37 |       3 |  -1.00 | WITHDRAW | SUCCESS | Match #156 Loss                          | 2025-11-12 15:58:54.352693+00 | b3c77d9f-cbff-4940-8f19-cdb842f383a5
+ 38 |       2 |   4.00 | WIN      | SUCCESS | Match #156 Win                           | 2025-11-12 15:58:54.547333+00 | 8ae1f323-4be5-469e-9159-3ec363d28f2b
+ 39 |       0 |   2.00 | FEE      | SUCCESS | Match #156 System Fee (Virtual Merchant) | 2025-11-12 15:58:54.732721+00 | 51ee280b-1fcd-4b45-9e2f-57471822cb92
+(31 rows)
 
