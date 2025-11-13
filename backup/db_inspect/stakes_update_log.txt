@@ -1,0 +1,10 @@
+TRUNCATE TABLE
+INSERT 0 3
+ id | stake_amount | entry_fee | winner_payout |        label        
+----+--------------+-----------+---------------+---------------------
+  1 |            2 |         2 |             4 | ₹2 Stage (3-player)
+  2 |            4 |         4 |             8 | ₹4 Stage (3-player)
+  3 |            6 |         6 |            12 | ₹6 Stage (3-player)
+(3 rows)
+
+Stake table updated successfully and verified.
