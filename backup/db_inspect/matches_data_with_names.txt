@@ -1,5 +1,7 @@
  id  | stake_amount |     player1     |     player2     |     player3     |     winner      | merchant |  status  | system_fee |          created_at           |          finished_at          | current_turn | num_players | refundable | forfeit_ids 
 -----+--------------+-----------------+-----------------+-----------------+-----------------+----------+----------+------------+-------------------------------+-------------------------------+--------------+-------------+------------+-------------
+ 172 |            2 | sridhar.christh | sri.christh     | sr1985!         |                 |          | FINISHED |       0.00 | 2025-11-13 20:04:41.046921+00 |                               |            1 |           3 | t          | {}
+ 171 |            2 | sridhar.christh | sri.christh     | sr1985!         |                 |          | FINISHED |       0.00 | 2025-11-13 19:53:37.860475+00 |                               |            1 |           3 | t          | {}
  170 |            2 | sr1985!         | sri.christh     | sridhar.christh |                 |          | FINISHED |       0.00 | 2025-11-13 19:35:53.905983+00 |                               |            1 |           3 | t          | {}
  167 |            2 |                 | sri.christh     | sridhar.christh |                 |          | FINISHED |       0.00 | 2025-11-13 17:51:34.260427+00 |                               |            1 |           3 | t          | {1}
  166 |            2 | sri.christh     |                 |                 |                 |          | FINISHED |       0.00 | 2025-11-13 17:51:11.658218+00 |                               |            1 |           2 | t          | {}
@@ -115,5 +117,5 @@
   32 |            0 | sri.christh     | sridharc98      |                 |                 |          | FINISHED |       0.00 | 2025-10-24 23:53:38.715841+00 | 2025-10-24 23:55:26.665824+00 |            1 |           2 | t          | 
    9 |            0 | sri.christh     | sridharc98      | sridharc98      |                 |          | FINISHED |       0.00 | 2025-10-24 22:24:25.148614+00 |                               |            0 |           3 | t          | 
    2 |            0 | sr1985!         | sri.christh     |                 |                 |          | FINISHED |       0.00 | 2025-10-24 20:09:04.666796+00 |                               |            0 |           2 | t          | 
-(115 rows)
+(117 rows)
 
