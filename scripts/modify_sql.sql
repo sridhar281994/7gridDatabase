@@ -1,34 +1,27 @@
 #!/bin/bash
 set -e
 
-echo "Updating stakes table with new stake logic (2, 4, 6) ..."
+echo "Updating stage names (labels) in stakes table..."
 
-mkdir -p backup/db_inspect
+psql "$DATABASE_URL" <<'SQL'
+-- ============================
+-- Update Stage Labels
+-- ============================
 
-OUTPUT_FILE="backup/db_inspect/stakes_update_log.txt"
-> "$OUTPUT_FILE"
+UPDATE stakes
+SET label = 'Bronze (₹2 Stage)'
+WHERE stake_amount = 2;
 
-psql "$DATABASE_URL" <<'SQL' >> "$OUTPUT_FILE"
+UPDATE stakes
+SET label = 'Silver (₹4 Stage)'
+WHERE stake_amount = 4;
 
--- Remove old stake rules
-TRUNCATE TABLE stakes RESTART IDENTITY;
+UPDATE stakes
+SET label = 'Gold (₹6 Stage)'
+WHERE stake_amount = 6;
 
--- 3-player mode stakes
-INSERT INTO stakes (stake_amount, entry_fee, winner_payout, label) VALUES
-(2, 2, 4, '₹2 Stage (3-player)'),
-(4, 4, 8, '₹4 Stage (3-player)'),
-(6, 6, 12, '₹6 Stage (3-player)');
-
--- 2-player mode stakes
-INSERT INTO stakes (stake_amount, entry_fee, winner_payout, label) VALUES
-(2, 2, 3, '₹2 Stage (2-player)'),
-(4, 4, 6, '₹4 Stage (2-player)'),
-(6, 6, 9, '₹6 Stage (2-player)');
-
--- Verify insertion
-SELECT id, stake_amount, entry_fee, winner_payout, label FROM stakes ORDER BY id;
-
+-- Optional: confirm results
+SELECT stake_amount, label FROM stakes ORDER BY stake_amount;
 SQL
 
-echo "Stake table updated successfully and verified." >> "$OUTPUT_FILE"
-echo "Script completed. Output saved to $OUTPUT_FILE"
+echo "✅ Stage labels updated successfully!"
