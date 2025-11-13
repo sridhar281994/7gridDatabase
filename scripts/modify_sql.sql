@@ -9,15 +9,15 @@ psql "$DATABASE_URL" <<'SQL'
 -- ============================
 
 UPDATE stakes
-SET label = 'Bronze (₹2 Stage)'
+SET label = 'Dual Rush'
 WHERE stake_amount = 2;
 
 UPDATE stakes
-SET label = 'Silver (₹4 Stage)'
+SET label = 'QUAD Crush'
 WHERE stake_amount = 4;
 
 UPDATE stakes
-SET label = 'Gold (₹6 Stage)'
+SET label = 'siXth Gear'
 WHERE stake_amount = 6;
 
 -- Optional: confirm results
