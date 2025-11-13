@@ -1,27 +1,24 @@
 #!/bin/bash
 set -e
 
-echo "Updating stage names (labels) in stakes table..."
+echo "Adding Free Play stage to stakes table..."
 
 psql "$DATABASE_URL" <<'SQL'
--- ============================
--- Update Stage Labels
--- ============================
+-- ====================================
+-- Ensure Free Play stage exists
+-- ====================================
+INSERT INTO stakes (stake_amount, entry_fee, winner_payout, label)
+VALUES (0, 0, 0, 'Free Play')
+ON CONFLICT (stake_amount)
+DO UPDATE SET
+    entry_fee = EXCLUDED.entry_fee,
+    winner_payout = EXCLUDED.winner_payout,
+    label = EXCLUDED.label;
 
-UPDATE stakes
-SET label = 'Dual Rush'
-WHERE stake_amount = 2;
-
-UPDATE stakes
-SET label = 'QUAD Crush'
-WHERE stake_amount = 4;
-
-UPDATE stakes
-SET label = 'siXth Gear'
-WHERE stake_amount = 6;
-
--- Optional: confirm results
-SELECT stake_amount, label FROM stakes ORDER BY stake_amount;
+-- Confirm result
+SELECT stake_amount, entry_fee, winner_payout, label
+FROM stakes
+ORDER BY stake_amount;
 SQL
 
-echo "✅ Stage labels updated successfully!"
+echo "✅ Free Play stage added successfully!"
