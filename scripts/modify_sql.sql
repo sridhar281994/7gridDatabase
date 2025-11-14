@@ -3,42 +3,55 @@ set -e
 
 echo "Starting DB inspection..."
 
-# Extract psql connection pieces from DATABASE_URL
-export PGHOST=$(echo "$DATABASE_URL" | sed -E 's|.*://([^:/]+).*|\1|')
-export PGPORT=$(echo "$DATABASE_URL" | sed -E 's|.*:([0-9]+)/.*|\1|')
-export PGUSER=$(echo "$DATABASE_URL" | sed -E 's|.*//([^:]+):.*|\1|')
-export PGPASSWORD=$(echo "$DATABASE_URL" | sed -E 's|.*:([^@]+)@.*|\1|')
-export PGDATABASE=$(echo "$DATABASE_URL" | sed -E 's|.*/([^/?]+).*|\1|')
+mkdir -p backup/db_inspect
 
-echo "Running SQL..."
+OUTFILE="backup/db_inspect/match_inspect.txt"
+> "$OUTFILE"
 
-psql <<'SQL'
-CREATE TABLE IF NOT EXISTS match_inspection (
-    id SERIAL PRIMARY KEY,
-    match_id INT,
-    stake_amount INT,
-    num_players INT,
-    status TEXT,
-    created_at TIMESTAMPTZ,
-    finished_at TIMESTAMPTZ,
-    winner_user_id INT
-);
+echo "Inspecting matches table..." | tee -a "$OUTFILE"
 
-DELETE FROM match_inspection;
+# 1. Basic match overview
+echo -e "\n===== MATCH SUMMARY =====" >> "$OUTFILE"
+psql "$DATABASE_URL" -c "
+SELECT id, stake_amount, num_players, status, created_at, finished_at
+FROM game_match
+ORDER BY id DESC
+LIMIT 200;
+" >> "$OUTFILE" 2>/dev/null
 
-INSERT INTO match_inspection (match_id, stake_amount, num_players, status, created_at, finished_at, winner_user_id)
+# 2. Winner / loser distribution
+echo -e "\n===== WINNER / LOSER CURRENT BALANCES =====" >> "$OUTFILE"
+psql "$DATABASE_URL" -c "
 SELECT 
-    id,
-    stake_amount,
-    num_players,
-    status,
-    created_at,
-    finished_at,
-    winner_user_id
-FROM matches;
-SQL
+    m.id AS match_id,
+    m.stake_amount,
+    u.id AS user_id,
+    u.wallet_balance,
+    CASE 
+        WHEN m.winner_user_id = u.id THEN 'WINNER'
+        ELSE 'LOSER'
+    END AS result
+FROM game_match m
+LEFT JOIN users u 
+    ON u.id = ANY(ARRAY[m.p1_user_id, m.p2_user_id, m.p3_user_id])
+WHERE m.finished_at IS NOT NULL
+ORDER BY m.id DESC
+LIMIT 200;
+" >> "$OUTFILE" 2>/dev/null
 
-echo "Exporting CSV..."
-psql -c "\copy match_inspection TO 'backup/db_inspect/match_inspect.csv' CSV HEADER"
+# 3. Recent prize distribution check
+echo -e "\n===== PRIZE MOVEMENTS (LAST 24 HOURS) =====" >> "$OUTFILE"
+psql "$DATABASE_URL" -c "
+SELECT 
+    t.id,
+    t.user_id,
+    t.amount,
+    t.tx_type,
+    t.status,
+    t.timestamp
+FROM wallet_transactions t
+WHERE t.timestamp > NOW() - INTERVAL '1 day'
+ORDER BY t.timestamp DESC;
+" >> "$OUTFILE" 2>/dev/null
 
-echo "Inspection Complete."
+echo "DB inspection complete → $OUTFILE"
