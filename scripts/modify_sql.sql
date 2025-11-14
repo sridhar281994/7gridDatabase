@@ -1,58 +1,36 @@
-this is working yml, share respective sql script.
+#!/bin/bash
+set -e
 
-name: Daily PostgreSQL Inspection
+echo "Running SQL fix on matches table..."
 
-on:
-  schedule:
-    - cron: "0 1 * * *"   # runs daily at 01:00 UTC
-  workflow_dispatch:
+# Execute SQL inside PostgreSQL
+psql "$DATABASE_URL" << 'EOF'
+-- Safe to run multiple times
 
-jobs:
-  inspect:
-    runs-on: ubuntu-latest
-    container:
-      image: postgres:17
+UPDATE matches SET status = 'WAITING'   
+WHERE status = 'waiting';
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+UPDATE matches SET status = 'ACTIVE'    
+WHERE status = 'active';
 
-      - name: Create directories
-        run: mkdir -p backup/db_inspect scripts
+UPDATE matches SET status = 'FINISHED'  
+WHERE status = 'finished';
 
-      - name: Run database inspection
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: bash scripts/modify_sql.sql
+UPDATE matches SET status = 'ABANDONED' 
+WHERE status = 'abandoned';
 
-      - name: Upload inspection artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: db_inspect
-          path: backup/db_inspect/
+-- Output last 50 rows for inspection
+SELECT id, status 
+FROM matches 
+ORDER BY id DESC 
+LIMIT 50;
+EOF
 
-  commit:
-    runs-on: ubuntu-latest
-    needs: inspect
-    permissions:
-      contents: write
+echo "SQL patch completed. Writing inspection output..."
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+# Save inspection result to artifact folder
+mkdir -p backup/db_inspect
+psql "$DATABASE_URL" -c "SELECT id, status FROM matches ORDER BY id DESC" \
+  > backup/db_inspect/status_report.txt
 
-      - name: Download inspection artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: db_inspect
-          path: backup/db_inspect/
-
-      - name: Commit and push inspection results
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add backup/db_inspect/*
-          git commit -m "Database inspection $(date -u +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
+echo "Inspection file saved at backup/db_inspect/status_report.txt"
