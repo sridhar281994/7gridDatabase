@@ -1,44 +1,17 @@
-#!/bin/bash
-set -e
+CREATE TABLE match_results (
+    id SERIAL PRIMARY KEY,
 
-echo "Starting DB inspection..."
+    match_id INT NOT NULL REFERENCES game_matches(id) ON DELETE CASCADE,
 
-if [ -z "$DATABASE_URL" ]; then
-  echo "ERROR: DATABASE_URL is not set"
-  exit 1
-fi
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
 
-mkdir -p backup/db_inspect
-OUT="backup/db_inspect/status_fix_$(date -u +%Y%m%d_%H%M%S).txt"
+    is_winner BOOLEAN NOT NULL DEFAULT FALSE,
 
-# Perform updates + collect counts
-psql "$DATABASE_URL" <<'EOF' > "$OUT"
+    amount_change INT NOT NULL DEFAULT 0,
+    -- negative for losers, positive for winner  
 
--- Show current enum values before changes
-SELECT 'BEFORE' AS stage, status, COUNT(*) AS rows
-FROM matches
-GROUP BY status
-ORDER BY status;
+    before_balance INT NOT NULL DEFAULT 0,
+    after_balance INT NOT NULL DEFAULT 0,
 
--- Fix lowercase enum values
-UPDATE matches SET status = 'WAITING'
-WHERE status::text = 'waiting';
-
-UPDATE matches SET status = 'ACTIVE'
-WHERE status::text = 'active';
-
-UPDATE matches SET status = 'FINISHED'
-WHERE status::text = 'finished';
-
-UPDATE matches SET status = 'ABANDONED'
-WHERE status::text = 'abandoned';
-
--- Show status distribution after change
-SELECT 'AFTER' AS stage, status, COUNT(*) AS rows
-FROM matches
-GROUP BY status
-ORDER BY status;
-
-EOF
-
-echo "Inspection complete. Report saved to $OUT"
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
