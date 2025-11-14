@@ -1,44 +1,28 @@
-#!/bin/bash
-set -e
+-- List all public tables
+\echo 'Fetching table list...'
+SELECT tablename
+FROM pg_tables
+WHERE schemaname = 'public';
 
-echo "Starting DB inspection..."
+-- Dump every table fully
+\echo 'Starting table exports...'
 
-mkdir -p backup/db_inspect
+-- Loop not supported in plain SQL, so GitHub runs per-table manually
+-- But we export matches + users + wallet + stakes
 
-OUT="backup/db_inspect/match_inspect.txt"
-> "$OUT"
+\echo 'Exporting matches...'
+\copy (SELECT * FROM matches ORDER BY id) TO 'backup/db_inspect/matches.csv' CSV HEADER;
 
-echo "Inspecting matches table..." >> "$OUT"
+\echo 'Exporting users...'
+\copy (SELECT * FROM users ORDER BY id) TO 'backup/db_inspect/users.csv' CSV HEADER;
 
-# 1. Check if table exists
-EXISTS=$(psql "$DATABASE_URL" -tAc "SELECT to_regclass('public.matches');")
+\echo 'Exporting wallet_transactions...'
+\copy (SELECT * FROM wallet_transactions ORDER BY id) TO 'backup/db_inspect/wallet_transactions.csv' CSV HEADER;
 
-if [ "$EXISTS" = "matches" ]; then
-  echo "Table found → dumping data..." >> "$OUT"
+\echo 'Exporting stakes...'
+\copy (SELECT * FROM stakes ORDER BY id) TO 'backup/db_inspect/stakes.csv' CSV HEADER;
 
-  # 2. Dump match summary
-  psql "$DATABASE_URL" -c "
-    SELECT 
-      id,
-      stake_amount,
-      num_players,
-      status,
-      p1_user_id,
-      p2_user_id,
-      p3_user_id,
-      winner_user_id,
-      created_at,
-      finished_at
-    FROM matches
-    ORDER BY id DESC
-    LIMIT 200;
-  " >> "$OUT" 2>/dev/null || echo "Failed to query matches" >> "$OUT"
+\echo 'Exporting otps...'
+\copy (SELECT * FROM otps ORDER BY id) TO 'backup/db_inspect/otps.csv' CSV HEADER;
 
-else
-  echo "matches table NOT found." >> "$OUT"
-fi
-
-echo "" >> "$OUT"
-echo "Inspection complete." >> "$OUT"
-
-echo "Inspection written to $OUT"
+\echo 'Completed table exports.'
