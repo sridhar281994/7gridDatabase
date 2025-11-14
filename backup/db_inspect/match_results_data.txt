@@ -1,0 +1,4 @@
+ id | match_id | winner_id | loser_ids | stake_amount | num_players | created_at 
+----+----------+-----------+-----------+--------------+-------------+------------
+(0 rows)
+
