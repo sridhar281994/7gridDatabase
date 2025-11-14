@@ -1,18 +1,24 @@
--- fix enum values to lowercase
-ALTER TYPE matchstatus RENAME TO matchstatus_old;
+#!/bin/bash
+set -e
 
-CREATE TYPE matchstatus AS ENUM (
-    'waiting',
-    'active',
-    'finished',
-    'abandoned'
-);
+echo "Starting DB inspection..."
 
-ALTER TABLE matches
-    ALTER COLUMN status TYPE matchstatus
-    USING LOWER(status)::matchstatus;
+# Validate
+if [ -z "$DATABASE_URL" ]; then
+  echo "ERROR: DATABASE_URL is missing"
+  exit 1
+fi
 
-DROP TYPE matchstatus_old;
+# Create output
+OUT="backup/db_inspect/status_fix_$(date -u +%Y%m%d_%H%M%S).txt"
+mkdir -p backup/db_inspect
 
--- normalize all existing rows
-UPDATE matches SET status = LOWER(status)::matchstatus;
+# Run SQL commands using psql
+psql "$DATABASE_URL" <<'EOF'
+UPDATE matches SET status = 'WAITING'   WHERE status = 'waiting';
+UPDATE matches SET status = 'ACTIVE'    WHERE status = 'active';
+UPDATE matches SET status = 'FINISHED'  WHERE status = 'finished';
+UPDATE matches SET status = 'ABANDONED' WHERE status = 'abandoned';
+EOF
+
+echo "Inspection complete" | tee "$OUT"
