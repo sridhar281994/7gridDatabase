@@ -1,17 +1,58 @@
--- Fix lowercase match status values by converting them to uppercase
--- Safe to run multiple times (idempotent)
+this is working yml, share respective sql script.
 
-UPDATE matches SET status = 'WAITING' 
-WHERE status = 'waiting';
+name: Daily PostgreSQL Inspection
 
-UPDATE matches SET status = 'ACTIVE' 
-WHERE status = 'active';
+on:
+  schedule:
+    - cron: "0 1 * * *"   # runs daily at 01:00 UTC
+  workflow_dispatch:
 
-UPDATE matches SET status = 'FINISHED' 
-WHERE status = 'finished';
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    container:
+      image: postgres:17
 
-UPDATE matches SET status = 'ABANDONED' 
-WHERE status = 'abandoned';
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
--- Optional: confirm updates
-SELECT id, status FROM matches ORDER BY id DESC LIMIT 20;
+      - name: Create directories
+        run: mkdir -p backup/db_inspect scripts
+
+      - name: Run database inspection
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: bash scripts/modify_sql.sql
+
+      - name: Upload inspection artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: db_inspect
+          path: backup/db_inspect/
+
+  commit:
+    runs-on: ubuntu-latest
+    needs: inspect
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download inspection artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: db_inspect
+          path: backup/db_inspect/
+
+      - name: Commit and push inspection results
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add backup/db_inspect/*
+          git commit -m "Database inspection $(date -u +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
