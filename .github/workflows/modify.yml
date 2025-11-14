@@ -1,4 +1,4 @@
-name: Daily PostgreSQL Inspection
+name: Daily PostgreSQL Inspection2
 
 on:
   schedule:
