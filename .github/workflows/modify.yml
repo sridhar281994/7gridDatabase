@@ -1,0 +1,6 @@
+- name: Run database inspection
+  env:
+    DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  run: |
+    echo "Running match_results table creation..."
+    psql "$DATABASE_URL" -f scripts/create_match_results.sql
