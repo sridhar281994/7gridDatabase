@@ -1,51 +1,43 @@
-#!/bin/bash
-set -e
+-- Daily DB Inspection Script
+-- This script runs inside postgres:17 container using `psql -f`
 
-echo "Starting DB inspection..."
+-- Create a summary view if not exists
+CREATE OR REPLACE VIEW match_details AS
+SELECT
+  m.id AS match_id,
+  m.stake_amount,
+  m.num_players,
+  m.status,
+  m.created_at,
+  m.finished_at,
+  m.winner_user_id,
+  u1.name AS player1,
+  u2.name AS player2,
+  u3.name AS player3,
+  w.name  AS winner
+FROM matches m
+LEFT JOIN users u1 ON u1.id = m.p1_user_id
+LEFT JOIN users u2 ON u2.id = m.p2_user_id
+LEFT JOIN users u3 ON u3.id = m.p3_user_id
+LEFT JOIN users w  ON w.id  = m.winner_user_id;
 
-# Run SQL using psql
-psql "$DATABASE_URL" <<'SQL'
-
--- ===============================
--- 1. Create table if not exists
--- ===============================
-CREATE TABLE IF NOT EXISTS match_results (
-    id SERIAL PRIMARY KEY,
-    match_id INTEGER NOT NULL,
-    winner_id INTEGER NOT NULL,
-    loser_ids INTEGER[] NOT NULL,
-    stake_amount INTEGER NOT NULL,
-    num_players INTEGER NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW()
-);
-
--- ===============================
--- 2. Create indexes
--- ===============================
-CREATE INDEX IF NOT EXISTS idx_match_results_match_id
-    ON match_results(match_id);
-
-CREATE INDEX IF NOT EXISTS idx_match_results_winner
-    ON match_results(winner_id);
-
--- ===============================
--- 3. Export sample inspection data
--- ===============================
+-- Export inspection output to file
 \copy (
-    SELECT
-        m.id AS match_id,
-        m.stake_amount,
-        m.num_players,
-        m.winner_user_id AS winner,
-        ARRAY_REMOVE(ARRAY[m.p1_user_id, m.p2_user_id, m.p3_user_id], m.winner_user_id) AS losers,
-        m.created_at,
-        m.finished_at
-    FROM matches m
-    WHERE m.status = 'FINISHED'
-    ORDER BY m.id DESC
-    LIMIT 50
-) TO 'backup/db_inspect/match_results.txt' WITH CSV HEADER;
+    SELECT *
+    FROM match_details
+    ORDER BY match_id DESC
+) TO 'backup/db_inspect/match_details.csv' CSV HEADER;
 
-SQL
+-- Export wallet transactions
+\copy (
+    SELECT *
+    FROM wallet_transactions
+    ORDER BY timestamp DESC
+) TO 'backup/db_inspect/wallet_transactions.csv' CSV HEADER;
 
-echo "Inspection complete."
+-- Export users balance snapshot
+\copy (
+    SELECT id, name, phone, wallet_balance
+    FROM users
+    ORDER BY id
+) TO 'backup/db_inspect/users_balance.csv' CSV HEADER;
