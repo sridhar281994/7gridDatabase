@@ -1,15 +1,13 @@
-name: Daily PostgreSQL Inspection2
+name: Daily PostgreSQL Inspection
 
 on:
   schedule:
-    - cron: "0 1 * * *"   # daily at 01:00 UTC
+    - cron: "0 1 * * *"
   workflow_dispatch:
 
 jobs:
   inspect:
     runs-on: ubuntu-latest
-
-    # Use PostgreSQL 17 environment so psql version matches server
     container:
       image: postgres:17
 
@@ -18,24 +16,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create directories
-        run: mkdir -p backup/db_inspect
+        run: mkdir -p backup/db_inspect scripts
 
-      - name: Install PostgreSQL client tools
-        run: |
-          apt-get update
-          apt-get install -y postgresql-client
-
-      - name: Run SQL inspection
+      - name: Run database inspection
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          echo "Starting DB inspection..."
-
-          # Run your SQL file using psql
-          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/modify_sql.sql \
-            > backup/db_inspect/inspection_$(date -u +'%Y-%m-%d_%H-%M-%S').txt
-
-          echo "Inspection complete"
+          psql "$DATABASE_URL" -f scripts/modify_sql.sql
 
       - name: Upload inspection artifact
         uses: actions/upload-artifact@v4
@@ -65,9 +52,6 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-
           git add backup/db_inspect/*
-
           git commit -m "Database inspection $(date -u +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
-
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
