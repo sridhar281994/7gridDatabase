@@ -4,15 +4,16 @@ set -e
 echo "Starting DB inspection..."
 
 if [ -z "$DATABASE_URL" ]; then
-  echo "ERROR: DATABASE_URL is missing"
+  echo "ERROR: DATABASE_URL is not set"
   exit 1
 fi
 
-OUT="backup/db_inspect/status_fix_$(date -u +%Y%m%d_%H%M%S).txt"
 mkdir -p backup/db_inspect
+OUT="backup/db_inspect/status_fix_$(date -u +%Y%m%d_%H%M%S).txt"
 
-# Run SQL fixes
+# Run SQL with ENUM-safe comparisons
 psql "$DATABASE_URL" <<'EOF'
+-- Fix lowercase enum values by comparing as text
 UPDATE matches SET status = 'WAITING'
 WHERE status::text = 'waiting';
 
