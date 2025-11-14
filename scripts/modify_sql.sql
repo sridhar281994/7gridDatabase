@@ -1,36 +1,18 @@
-#!/bin/bash
-set -e
+-- fix enum values to lowercase
+ALTER TYPE matchstatus RENAME TO matchstatus_old;
 
-echo "Running SQL fix on matches table..."
+CREATE TYPE matchstatus AS ENUM (
+    'waiting',
+    'active',
+    'finished',
+    'abandoned'
+);
 
-# Execute SQL inside PostgreSQL
-psql "$DATABASE_URL" << 'EOF'
--- Safe to run multiple times
+ALTER TABLE matches
+    ALTER COLUMN status TYPE matchstatus
+    USING LOWER(status)::matchstatus;
 
-UPDATE matches SET status = 'WAITING'   
-WHERE status = 'waiting';
+DROP TYPE matchstatus_old;
 
-UPDATE matches SET status = 'ACTIVE'    
-WHERE status = 'active';
-
-UPDATE matches SET status = 'FINISHED'  
-WHERE status = 'finished';
-
-UPDATE matches SET status = 'ABANDONED' 
-WHERE status = 'abandoned';
-
--- Output last 50 rows for inspection
-SELECT id, status 
-FROM matches 
-ORDER BY id DESC 
-LIMIT 50;
-EOF
-
-echo "SQL patch completed. Writing inspection output..."
-
-# Save inspection result to artifact folder
-mkdir -p backup/db_inspect
-psql "$DATABASE_URL" -c "SELECT id, status FROM matches ORDER BY id DESC" \
-  > backup/db_inspect/status_report.txt
-
-echo "Inspection file saved at backup/db_inspect/status_report.txt"
+-- normalize all existing rows
+UPDATE matches SET status = LOWER(status)::matchstatus;
