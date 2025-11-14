@@ -1,6 +1,73 @@
-- name: Run database inspection
-  env:
-    DATABASE_URL: ${{ secrets.DATABASE_URL }}
-  run: |
-    echo "Running match_results table creation..."
-    psql "$DATABASE_URL" -f scripts/create_match_results.sql
+name: Daily PostgreSQL Inspection
+
+on:
+  schedule:
+    - cron: "0 1 * * *"   # daily at 01:00 UTC
+  workflow_dispatch:
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+
+    # Use PostgreSQL 17 environment so psql version matches server
+    container:
+      image: postgres:17
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create directories
+        run: mkdir -p backup/db_inspect
+
+      - name: Install PostgreSQL client tools
+        run: |
+          apt-get update
+          apt-get install -y postgresql-client
+
+      - name: Run SQL inspection
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          echo "Starting DB inspection..."
+
+          # Run your SQL file using psql
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/modify_sql.sql \
+            > backup/db_inspect/inspection_$(date -u +'%Y-%m-%d_%H-%M-%S').txt
+
+          echo "Inspection complete"
+
+      - name: Upload inspection artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: db_inspect
+          path: backup/db_inspect/
+
+  commit:
+    runs-on: ubuntu-latest
+    needs: inspect
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download inspection artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: db_inspect
+          path: backup/db_inspect/
+
+      - name: Commit and push inspection results
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add backup/db_inspect/*
+
+          git commit -m "Database inspection $(date -u +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
+
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
