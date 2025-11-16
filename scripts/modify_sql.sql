@@ -3,29 +3,23 @@ set -e
 
 echo "Starting DB inspection..."
 
-# Extract host / user / db / password from DATABASE_URL
-# postgres://user:pass@host:5432/dbname
-regex="postgres:\/\/([^:]+):([^@]+)@([^:\/]+):?([0-9]*)\/(.+)"
-if [[ $DATABASE_URL =~ $regex ]]; then
-  PGUSER="${BASH_REMATCH[1]}"
-  PGPASSWORD="${BASH_REMATCH[2]}"
-  PGHOST="${BASH_REMATCH[3]}"
-  PGPORT="${BASH_REMATCH[4]:-5432}"
-  PGDATABASE="${BASH_REMATCH[5]}"
-else
-  echo "Invalid DATABASE_URL"
-  exit 1
-fi
+mkdir -p backup/db_inspect
 
-export PGPASSWORD
+OUT_BEFORE="backup/db_inspect/01_before_status.txt"
+OUT_AFTER="backup/db_inspect/03_after_status.txt"
+OUT_RECENT="backup/db_inspect/02_recent_matches.txt"
 
-OUTDIR="backup/db_inspect"
-mkdir -p "$OUTDIR"
+# Clear old files
+> "$OUT_BEFORE"
+> "$OUT_AFTER"
+> "$OUT_RECENT"
 
-# ----------------------------------------------------------------------
-# Create / Replace VIEW
-# ----------------------------------------------------------------------
-psql "host=$PGHOST port=$PGPORT user=$PGUSER dbname=$PGDATABASE" <<'SQL'
+# -------------------------------------------------------
+# Create / Replace match_details VIEW
+# -------------------------------------------------------
+echo "Creating/Updating match_details view..."
+
+psql "$DATABASE_URL" <<'SQL'
 CREATE OR REPLACE VIEW match_details AS
 SELECT
   m.id,
@@ -51,33 +45,39 @@ LEFT JOIN users uw ON m.winner_user_id = uw.id
 LEFT JOIN users um ON m.merchant_user_id = um.id;
 SQL
 
-echo "View created."
+echo "View creation complete."
 
-# ----------------------------------------------------------------------
-# BEFORE COUNTS
-# ----------------------------------------------------------------------
-echo "Collecting BEFORE snapshot..."
-psql "host=$PGHOST port=$PGPORT user=$PGUSER dbname=$PGDATABASE" -c \
-"SELECT 'BEFORE' AS stage, status, COUNT(*) AS rows FROM matches GROUP BY status ORDER BY status;" \
-> "$OUTDIR/01_before_status.txt"
+# -------------------------------------------------------
+# BEFORE snapshot
+# -------------------------------------------------------
+echo "Collecting BEFORE status counts..."
+psql "$DATABASE_URL" -c \
+"SELECT 'BEFORE' AS stage, status, COUNT(*) AS rows
+ FROM matches
+ GROUP BY status
+ ORDER BY status;" \
+> "$OUT_BEFORE"
 
-# ----------------------------------------------------------------------
-# Sample diagnostic query – Top 50 recent matches
-# ----------------------------------------------------------------------
-echo "Running diagnostic queries..."
-psql "host=$PGHOST port=$PGPORT user=$PGUSER dbname=$PGDATABASE" -c \
+# -------------------------------------------------------
+# Diagnostic query – Recent matches
+# -------------------------------------------------------
+echo "Collecting recent match diagnostics..."
+psql "$DATABASE_URL" -c \
 "SELECT id, status, stake_amount, winner_user_id, created_at, finished_at
  FROM matches
  ORDER BY created_at DESC
  LIMIT 50;" \
-> "$OUTDIR/02_recent_matches.txt"
+> "$OUT_RECENT"
 
-# ----------------------------------------------------------------------
-# AFTER COUNTS
-# ----------------------------------------------------------------------
-echo "Collecting AFTER snapshot (same as BEFORE, kept for consistency)..."
-psql "host=$PGHOST port=$PGPORT user=$PGUSER dbname=$PGDATABASE" -c \
-"SELECT 'AFTER' AS stage, status, COUNT(*) AS rows FROM matches GROUP BY status ORDER BY status;" \
-> "$OUTDIR/03_after_status.txt"
+# -------------------------------------------------------
+# AFTER snapshot
+# -------------------------------------------------------
+echo "Collecting AFTER status counts..."
+psql "$DATABASE_URL" -c \
+"SELECT 'AFTER' AS stage, status, COUNT(*) AS rows
+ FROM matches
+ GROUP BY status
+ ORDER BY status;" \
+> "$OUT_AFTER"
 
-echo "Inspection complete."
+echo "Inspection complete. Files saved in backup/db_inspect/"
