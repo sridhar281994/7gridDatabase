@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex  # Enable command tracing for debugging
 
 echo "Starting PostgreSQL inspection and modification..."
 
