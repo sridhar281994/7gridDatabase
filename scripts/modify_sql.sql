@@ -15,7 +15,7 @@ OUTPUT_FILE="backup/db_inspect/db_inspect_results.txt"
 echo "Checking and adding 'ROBOTS Army' stages if not exists..." >> "$OUTPUT_FILE"
 
 # SQL to add ROBOTS Army stage (for both 2-player and 3-player)
-psql "$DATABASE_URL" -c "
+psql "$DATABASE_URL" <<EOF
 DO \$\$
 BEGIN
     -- Log the process of checking and inserting stages
@@ -39,7 +39,7 @@ BEGIN
         RAISE NOTICE 'ROBOTS Army (3-player) already exists.';
     END IF;
 END \$\$;
-" >> "$OUTPUT_FILE" 2>&1  # Captures both stdout and stderr
+EOF
 
 echo "Stage inspection and modification completed." >> "$OUTPUT_FILE"
 
