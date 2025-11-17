@@ -11,12 +11,22 @@ OUTPUT_FILE="backup/db_inspect/db_inspect_results.txt"
 # Clear previous file
 > "$OUTPUT_FILE"
 
-# Run the SQL commands to check and insert 'ROBOTS Army' stages
-echo "Running PostgreSQL modification script..." >> "$OUTPUT_FILE"
-
+# Ensure 'stages' table exists
+echo "Ensuring 'stages' table exists..." >> "$OUTPUT_FILE"
 psql "$DATABASE_URL" <<EOF >> "$OUTPUT_FILE" 2>&1
--- SQL Script to Modify Database for 'ROBOTS Army' Stage (2-player & 3-player)
+-- SQL Script to Ensure 'stages' Table and Modify Database for 'ROBOTS Army' Stage
 
+-- Create 'stages' table if it doesn't exist
+CREATE TABLE IF NOT EXISTS stages (
+    id SERIAL PRIMARY KEY,
+    stake_amount INT,
+    entry_fee INT,
+    winner_payout INT,
+    players INT,
+    label VARCHAR(255)
+);
+
+-- Now modify the 'stages' table for 'ROBOTS Army'
 DO \$\$
 BEGIN
     -- Check if 'ROBOTS Army' exists for 2 players
