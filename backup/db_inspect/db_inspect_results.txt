@@ -1,11 +1,33 @@
-Running PostgreSQL modification script...
+Ensuring 'stages' table exists...
+CREATE TABLE
 NOTICE:  Checking if ROBOTS Army (2-player) exists...
-ERROR:  relation "stages" does not exist
-LINE 1: NOT EXISTS (SELECT 1 FROM stages WHERE label = 'ROBOTS Army'...
-                                  ^
-QUERY:  NOT EXISTS (SELECT 1 FROM stages WHERE label = 'ROBOTS Army' AND players = 2)
-CONTEXT:  PL/pgSQL function inline_code_block line 5 at IF
+NOTICE:  Inserting ROBOTS Army (2-player)...
+NOTICE:  Checking if ROBOTS Army (3-player) exists...
+NOTICE:  Inserting ROBOTS Army (3-player)...
+DO
 Stage inspection and modification completed.
+===== TABLE: stages =====
+                                                                  Table "public.stages"
+    Column     |          Type          | Collation | Nullable |              Default               | Storage  | Compression | Stats target | Description 
+---------------+------------------------+-----------+----------+------------------------------------+----------+-------------+--------------+-------------
+ id            | integer                |           | not null | nextval('stages_id_seq'::regclass) | plain    |             |              | 
+ stake_amount  | integer                |           |          |                                    | plain    |             |              | 
+ entry_fee     | integer                |           |          |                                    | plain    |             |              | 
+ winner_payout | integer                |           |          |                                    | plain    |             |              | 
+ players       | integer                |           |          |                                    | plain    |             |              | 
+ label         | character varying(255) |           |          |                                    | extended |             |              | 
+Indexes:
+    "stages_pkey" PRIMARY KEY, btree (id)
+Access method: heap
+
+
+ id | stake_amount | entry_fee | winner_payout | players |    label    
+----+--------------+-----------+---------------+---------+-------------
+  1 |            0 |         0 |             0 |       2 | ROBOTS Army
+  2 |            0 |         0 |             0 |       3 | ROBOTS Army
+(2 rows)
+
+
 ===== TABLE: otps =====
                                                                   Table "public.otps"
    Column   |           Type           | Collation | Nullable |             Default              | Storage  | Compression | Stats target | Description 
