@@ -1,61 +1,30 @@
 #!/bin/bash
 set -e
 
-echo "===== Starting DB migration + inspection ====="
+echo "=== Starting DB rollback ==="
 
-mkdir -p backup/db_inspect
+if [ -z "$DATABASE_URL" ]; then
+  echo "ERROR: DATABASE_URL is not set"
+  exit 1
+fi
 
-OUTPUT_FILE="backup/db_inspect/full_db_data.txt"
+psql "$DATABASE_URL" <<'SQL'
 
-# Clear previous output
-> "$OUTPUT_FILE"
+-- 1) Remove is_agent column from users
+ALTER TABLE users DROP COLUMN IF EXISTS is_agent;
 
-echo "=== STEP 1: Apply schema fixes ==="
+-- 2) Remove merchant_user_id column from matches
+ALTER TABLE matches DROP COLUMN IF EXISTS merchant_user_id;
 
-# --------------------------------------------
-# SAFE MIGRATIONS (Idempotent – can run daily)
-# --------------------------------------------
+-- 3) Remove refundable column from matches
+ALTER TABLE matches DROP COLUMN IF EXISTS refundable;
 
-psql "$DATABASE_URL" << 'EOF'
+-- 4) Remove forfeit_ids column from matches
+ALTER TABLE matches DROP COLUMN IF EXISTS forfeit_ids;
 
--- Add missing is_agent column
-ALTER TABLE users 
-    ADD COLUMN IF NOT EXISTS is_agent BOOLEAN DEFAULT FALSE;
+-- 5) (Optional) Reset any agent users created manually
+DELETE FROM users WHERE id BETWEEN 10001 AND 10020;
 
--- Ensure refundable column exists with default true
-ALTER TABLE matches 
-    ADD COLUMN IF NOT EXISTS refundable BOOLEAN DEFAULT TRUE;
+SQL
 
--- Ensure forfeit_ids column exists
-ALTER TABLE matches
-    ADD COLUMN IF NOT EXISTS forfeit_ids INTEGER[] DEFAULT '{}';
-
--- Ensure merchant_user_id exists
-ALTER TABLE matches
-    ADD COLUMN IF NOT EXISTS merchant_user_id INTEGER REFERENCES users(id);
-
-EOF
-
-echo "=== Migration complete ==="
-
-
-echo "=== STEP 2: Start full DB inspection ==="
-
-TABLES=$(psql "$DATABASE_URL" -At -c "SELECT tablename FROM pg_tables WHERE schemaname='public';")
-
-for t in $TABLES; do
-  echo "===== TABLE: $t =====" >> "$OUTPUT_FILE"
-  
-  # Describe table
-  psql "$DATABASE_URL" -c "\d+ \"$t\"" >> "$OUTPUT_FILE" 2>/dev/null
-  
-  echo "" >> "$OUTPUT_FILE"
-  
-  # Dump table data
-  psql "$DATABASE_URL" -c "SELECT * FROM \"$t\";" >> "$OUTPUT_FILE" 2>/dev/null \
-    || echo "Skipped $t" >> "$OUTPUT_FILE"
-  
-  echo "" >> "$OUTPUT_FILE"
-done
-
-echo "✔ Full DB inspection written to $OUTPUT_FILE"
+echo "=== Rollback complete ==="
