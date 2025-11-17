@@ -1,6 +1,4 @@
--- -------------------------
 -- SQL Script to Inspect and Modify Database for "ROBOTS Army" Stage
--- -------------------------
 
 -- Check and add ROBOTS Army for 2-player mode
 DO $$
