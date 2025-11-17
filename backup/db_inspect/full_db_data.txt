@@ -544,7 +544,11 @@ Access method: heap
  525 | 7200553957 | 214246 | t    | 2025-11-16 16:54:19.042784+00 | 2025-11-16 16:49:19.039377+00
  526 | 9360649151 | 627335 | t    | 2025-11-16 16:54:20.36989+00  | 2025-11-16 16:49:20.366933+00
  527 | 1234567899 | 457448 | t    | 2025-11-16 16:55:10.641717+00 | 2025-11-16 16:50:10.638348+00
-(527 rows)
+ 528 | 1234567899 | 972479 | f    | 2025-11-17 08:35:16.342412+00 | 2025-11-17 08:30:16.332676+00
+ 529 | 1234567899 | 354446 | t    | 2025-11-17 08:35:16.871674+00 | 2025-11-17 08:30:16.836082+00
+ 530 | 7200553957 | 823992 | t    | 2025-11-17 08:35:19.182257+00 | 2025-11-17 08:30:19.172355+00
+ 531 | 9360649151 | 319778 | t    | 2025-11-17 08:35:19.392659+00 | 2025-11-17 08:30:19.3829+00
+(531 rows)
 
 
 ===== TABLE: wallet_transactions =====
@@ -856,7 +860,8 @@ Access method: heap
  213 |            2 |          1 |            |            |              1 |                1 | FINISHED |       0.00 | 2025-11-16 16:10:08.296919+00 | 2025-11-16 16:11:07.773041+00 |         2 |            0 |           3 | t          | {2,3}
  214 |            2 |          1 |            |            |              1 |                1 | FINISHED |       0.00 | 2025-11-16 16:39:32.287496+00 | 2025-11-16 16:40:21.623254+00 |         5 |            2 |           3 | t          | {2,3}
  216 |            2 |            |            |          1 |              1 |                1 | FINISHED |       0.00 | 2025-11-16 16:51:15.108978+00 | 2025-11-16 16:52:05.931416+00 |         4 |            1 |           3 | t          | {2,3}
-(159 rows)
+ 217 |            2 |            |      10003 |      10010 |                |                1 | ACTIVE   |       0.00 | 2025-11-17 08:31:43.161186+00 |                               |           |            2 |           3 | t          | {1}
+(160 rows)
 
 
 ===== TABLE: stakes =====
@@ -902,7 +907,6 @@ Access method: heap
  profile_image  | character varying        |           |          |                                   | extended |             |              | 
  created_at     | timestamp with time zone |           |          | now()                             | plain    |             |              | 
  updated_at     | timestamp with time zone |           |          |                                   | plain    |             |              | 
- is_agent       | boolean                  |           |          | false                             | plain    |             |              | 
 Indexes:
     "users_pkey" PRIMARY KEY, btree (id)
     "ix_users_id" btree (id)
@@ -923,17 +927,37 @@ Triggers:
 Access method: heap
 
 
-  id   |   phone    |           email           |                                    password_hash                                    |      name       | upi_id |            description            | wallet_balance |   profile_image    |          created_at           |          updated_at           | is_agent 
--------+------------+---------------------------+-------------------------------------------------------------------------------------+-----------------+--------+-----------------------------------+----------------+--------------------+-------------------------------+-------------------------------+----------
- -1000 | bot_sharp  | bot_sharp@system.local    | x                                                                                   | Sharp (Bot)     |        |                                   |           0.00 | assets/default.png | 2025-10-24 17:59:47.083826+00 |                               | f
- -1001 | bot_crazy  | bot_crazy@system.local    | x                                                                                   | Crazy Boy (Bot) |        |                                   |           0.00 | assets/default.png | 2025-10-24 17:59:47.083826+00 |                               | f
- -1002 | bot_srtech | bot_srtech@system.local   | x                                                                                   | SRTech Bot      |        |                                   |           0.00 | assets/default.png | 2025-10-24 17:59:47.083826+00 |                               | f
-     4 | 1234567890 | sridharc982@gmail.com     | $2b$12$StJg3yp7V/YpZTpP5IEFku5Qkl00JRRVS0zV81BSHf.JiaRkbTilK                        | sridharc98      |        |                                   |           0.00 | assets/default.png | 2025-10-24 20:23:32.421971+00 | 2025-10-24 21:35:20.763906+00 | f
-     0 | 0000000000 | merchant@system.local     | system                                                                              | System Merchant |        | System auto-account for game fees |           0.00 | assets/default.png | 2025-11-09 21:58:35.505102+00 |                               | f
-     3 | 9360649151 | sridhar.christh@gmail.com | $2b$12$h/xnuXIEcqbkIJjY3vKij.qJ3XVAHyg/43UzylJGMAApWe1uOzGvi                        | sridhar.christh |        |                                   |         487.00 | assets/default.png | 2025-10-24 20:02:29.997866+00 | 2025-11-16 16:51:15.101591+00 | f
-     2 | 7200553957 | sri.christh@gmail.com     | $2b$12$aHPsQwKcbdb7B6R0bvbfbuvPYP/DROpc7LYXQJe1iTBeIziIpSpk.                        | sri.christh     |        |                                   |         473.00 | assets/default.png | 2025-10-24 19:54:42.301455+00 | 2025-11-16 16:51:16.971359+00 | f
-     1 | 1234567899 | sri198528@gmail.com       | $bcrypt-sha256$v=2,t=2b,r=12$nDjIYGhe1ADxl/gU0prcIe$po.OfOzYEuh.W3hDhrdxlIDbUdaRira | sr1985!         |        |                                   |         516.00 | assets/default.png | 2025-10-24 18:17:57.089078+00 | 2025-11-16 16:52:05.573089+00 | f
-(8 rows)
+  id   |    phone    |           email           |                                    password_hash                                    |      name       | upi_id |            description            | wallet_balance |   profile_image    |          created_at           |          updated_at           
+-------+-------------+---------------------------+-------------------------------------------------------------------------------------+-----------------+--------+-----------------------------------+----------------+--------------------+-------------------------------+-------------------------------
+ -1000 | bot_sharp   | bot_sharp@system.local    | x                                                                                   | Sharp (Bot)     |        |                                   |           0.00 | assets/default.png | 2025-10-24 17:59:47.083826+00 | 
+ -1001 | bot_crazy   | bot_crazy@system.local    | x                                                                                   | Crazy Boy (Bot) |        |                                   |           0.00 | assets/default.png | 2025-10-24 17:59:47.083826+00 | 
+ -1002 | bot_srtech  | bot_srtech@system.local   | x                                                                                   | SRTech Bot      |        |                                   |           0.00 | assets/default.png | 2025-10-24 17:59:47.083826+00 | 
+     4 | 1234567890  | sridharc982@gmail.com     | $2b$12$StJg3yp7V/YpZTpP5IEFku5Qkl00JRRVS0zV81BSHf.JiaRkbTilK                        | sridharc98      |        |                                   |           0.00 | assets/default.png | 2025-10-24 20:23:32.421971+00 | 2025-10-24 21:35:20.763906+00
+     0 | 0000000000  | merchant@system.local     | system                                                                              | System Merchant |        | System auto-account for game fees |           0.00 | assets/default.png | 2025-11-09 21:58:35.505102+00 | 
+     3 | 9360649151  | sridhar.christh@gmail.com | $2b$12$h/xnuXIEcqbkIJjY3vKij.qJ3XVAHyg/43UzylJGMAApWe1uOzGvi                        | sridhar.christh |        |                                   |         487.00 | assets/default.png | 2025-10-24 20:02:29.997866+00 | 2025-11-16 16:51:15.101591+00
+     2 | 7200553957  | sri.christh@gmail.com     | $2b$12$aHPsQwKcbdb7B6R0bvbfbuvPYP/DROpc7LYXQJe1iTBeIziIpSpk.                        | sri.christh     |        |                                   |         473.00 | assets/default.png | 2025-10-24 19:54:42.301455+00 | 2025-11-16 16:51:16.971359+00
+ 10001 | agent_10001 | agent_10001@system.local  | x                                                                                   | Agent 10001     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 
+ 10002 | agent_10002 | agent_10002@system.local  | x                                                                                   | Agent 10002     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 
+ 10004 | agent_10004 | agent_10004@system.local  | x                                                                                   | Agent 10004     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 
+ 10005 | agent_10005 | agent_10005@system.local  | x                                                                                   | Agent 10005     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 
+ 10006 | agent_10006 | agent_10006@system.local  | x                                                                                   | Agent 10006     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 
+ 10007 | agent_10007 | agent_10007@system.local  | x                                                                                   | Agent 10007     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 
+ 10008 | agent_10008 | agent_10008@system.local  | x                                                                                   | Agent 10008     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 
+ 10009 | agent_10009 | agent_10009@system.local  | x                                                                                   | Agent 10009     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 
+ 10011 | agent_10011 | agent_10011@system.local  | x                                                                                   | Agent 10011     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 
+ 10012 | agent_10012 | agent_10012@system.local  | x                                                                                   | Agent 10012     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 
+ 10013 | agent_10013 | agent_10013@system.local  | x                                                                                   | Agent 10013     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 
+ 10014 | agent_10014 | agent_10014@system.local  | x                                                                                   | Agent 10014     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 
+ 10015 | agent_10015 | agent_10015@system.local  | x                                                                                   | Agent 10015     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 
+ 10016 | agent_10016 | agent_10016@system.local  | x                                                                                   | Agent 10016     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 
+ 10017 | agent_10017 | agent_10017@system.local  | x                                                                                   | Agent 10017     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 
+ 10018 | agent_10018 | agent_10018@system.local  | x                                                                                   | Agent 10018     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 
+ 10019 | agent_10019 | agent_10019@system.local  | x                                                                                   | Agent 10019     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 
+ 10020 | agent_10020 | agent_10020@system.local  | x                                                                                   | Agent 10020     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 
+     1 | 1234567899  | sri198528@gmail.com       | $bcrypt-sha256$v=2,t=2b,r=12$nDjIYGhe1ADxl/gU0prcIe$po.OfOzYEuh.W3hDhrdxlIDbUdaRira | sr1985!         |        |                                   |         514.00 | assets/default.png | 2025-10-24 18:17:57.089078+00 | 2025-11-17 08:31:43.143342+00
+ 10003 | agent_10003 | agent_10003@system.local  | x                                                                                   | Agent 10003     |        |                                   |          99.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-17 08:31:55.077204+00
+ 10010 | agent_10010 | agent_10010@system.local  | x                                                                                   | Agent 10010     |        |                                   |          99.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-17 08:31:55.077204+00
+(28 rows)
 
 
 ===== TABLE: game_matches =====
