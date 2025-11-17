@@ -79,5 +79,16 @@
  85 |       0 |   1.00 | FEE      | SUCCESS | Match 202 Fee                            | 2025-11-14 21:20:37.589226+00 | de7effe5-c571-4715-ac4d-0f297aa75e74
  86 |       3 |   4.00 | WIN      | SUCCESS | Match 203 Win (stake=2, players=3)       | 2025-11-14 21:24:37.36687+00  | 9d8bff24-b57a-42a7-ad00-9739a3d94a57
  87 |       0 |   2.00 | FEE      | SUCCESS | Match 203 Fee                            | 2025-11-14 21:24:37.529178+00 | 67171cbc-c750-4b0d-8548-4006641d0bdb
-(79 rows)
+ 88 |       3 |   4.00 | WIN      | SUCCESS | Match 204 win payout                     | 2025-11-14 23:47:17.388116+00 | 24fffe1b-d0ea-4840-b420-21c447131984
+ 89 |       1 |   2.00 | FEE      | SUCCESS | Match 204 system fee                     | 2025-11-14 23:47:17.577083+00 | 9914ee53-fe70-44a8-8f90-6ae3368dc3b7
+ 90 |       3 |   4.00 | WIN      | SUCCESS | Match 206 win                            | 2025-11-15 00:16:29.90774+00  | 40bcc5e4-7c0e-47bf-98da-9f36459c2bad
+ 91 |       1 |   2.00 | FEE      | SUCCESS | Match 206 fee                            | 2025-11-15 00:16:30.072748+00 | 5e21c3a9-ec67-48de-b847-58a5f75f7bcb
+ 92 |       2 |   4.00 | WIN      | SUCCESS | Match 208 win                            | 2025-11-15 00:20:21.993865+00 | 376f05ca-b429-4392-8ded-a4ab0e685f39
+ 93 |       1 |   2.00 | FEE      | SUCCESS | Match 208 fee                            | 2025-11-15 00:20:22.223617+00 | c5a52f1d-d96f-409d-8535-bc227e886c7c
+ 94 |       1 |   4.00 | WIN      | SUCCESS | Match 210 win                            | 2025-11-16 15:23:34.568754+00 | 0df053b8-1092-4f6a-b077-0a113c454da6
+ 95 |       3 |   4.00 | WIN      | SUCCESS | Match 212 win                            | 2025-11-16 15:53:53.384283+00 | 07d7b1b1-4fe8-455c-8cf8-2735beb03936
+ 96 |       1 |   4.00 | WIN      | SUCCESS | Match 213 win                            | 2025-11-16 16:11:07.181839+00 | d6fe9a46-fd47-47e0-9d9d-e9250aaf9bb6
+ 97 |       1 |   4.00 | WIN      | SUCCESS | Match 214 win                            | 2025-11-16 16:40:21.385564+00 | 3b0f0758-2d4b-4aaa-8861-c65099de384f
+ 98 |       1 |   4.00 | WIN      | SUCCESS | Match 216 win                            | 2025-11-16 16:52:05.733144+00 | b8132ef9-3cc9-4fb0-9ced-113c6d4bd20e
+(90 rows)
 
