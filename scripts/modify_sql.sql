@@ -11,16 +11,17 @@ OUTPUT_FILE="backup/db_inspect/db_inspect_results.txt"
 # Clear previous file
 > "$OUTPUT_FILE"
 
-# Inspect and modify 'stages' table for 'ROBOTS Army' stage (2-player & 3-player)
+# Log the start of the process
 echo "Checking and adding 'ROBOTS Army' stages if not exists..." >> "$OUTPUT_FILE"
 
 # SQL to add ROBOTS Army stage (for both 2-player and 3-player)
 psql "$DATABASE_URL" <<EOF
 DO \$\$
 BEGIN
-    -- Log the process of checking and inserting stages
+    -- Log checking and inserting stages
     RAISE NOTICE 'Checking for ROBOTS Army (2-player)...';
     
+    -- Check for existing stage (2-player)
     IF NOT EXISTS (SELECT 1 FROM stages WHERE label = 'ROBOTS Army' AND players = 2) THEN
         RAISE NOTICE 'Inserting ROBOTS Army stage (2-player)...';
         INSERT INTO stages (stake_amount, entry_fee, winner_payout, players, label)
@@ -28,7 +29,8 @@ BEGIN
     ELSE
         RAISE NOTICE 'ROBOTS Army (2-player) already exists.';
     END IF;
-    
+
+    -- Check for existing stage (3-player)
     RAISE NOTICE 'Checking for ROBOTS Army (3-player)...';
     
     IF NOT EXISTS (SELECT 1 FROM stages WHERE label = 'ROBOTS Army' AND players = 3) THEN
@@ -41,6 +43,7 @@ BEGIN
 END \$\$;
 EOF
 
+# Confirm that the process has been completed
 echo "Stage inspection and modification completed." >> "$OUTPUT_FILE"
 
 # Write table and column data in sequence
