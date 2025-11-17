@@ -1,59 +1,45 @@
 #!/bin/bash
 set -e
 
-echo "Starting PostgreSQL inspection and modification..."
+echo "Starting PostgreSQL inspection and ROBOTS Army patch..."
 
-# Create necessary directories
-mkdir -p backup/db_inspect scripts
+mkdir -p backup/db_inspect
 
 OUTPUT_FILE="backup/db_inspect/db_inspect_results.txt"
-
-# Clear previous file
 > "$OUTPUT_FILE"
 
-# Ensure 'stages' table exists
-echo "Ensuring 'stages' table exists..." >> "$OUTPUT_FILE"
-psql "$DATABASE_URL" <<EOF >> "$OUTPUT_FILE" 2>&1
--- SQL Script to Ensure 'stages' Table and Modify Database for 'ROBOTS Army' Stage
+echo "Ensuring ROBOTS Army exists in stakes table..." >> "$OUTPUT_FILE"
 
--- Create 'stages' table if it doesn't exist
-CREATE TABLE IF NOT EXISTS stages (
-    id SERIAL PRIMARY KEY,
-    stake_amount INT,
-    entry_fee INT,
-    winner_payout INT,
-    players INT,
-    label VARCHAR(255)
-);
-
--- Now modify the 'stages' table for 'ROBOTS Army'
-DO \$\$
+psql "$DATABASE_URL" <<'SQL' >> "$OUTPUT_FILE" 2>&1
+DO $$
 BEGIN
-    -- Check if 'ROBOTS Army' exists for 2 players
-    RAISE NOTICE 'Checking if ROBOTS Army (2-player) exists...';
-    IF NOT EXISTS (SELECT 1 FROM stages WHERE label = 'ROBOTS Army' AND players = 2) THEN
-        RAISE NOTICE 'Inserting ROBOTS Army (2-player)...';
-        INSERT INTO stages (stake_amount, entry_fee, winner_payout, players, label)
+    -- Insert ROBOTS Army (2-player) into stakes table
+    IF NOT EXISTS (
+        SELECT 1 FROM stakes WHERE label = 'ROBOTS Army' AND players = 2
+    ) THEN
+        INSERT INTO stakes (stake_amount, entry_fee, winner_payout, players, label)
         VALUES (0, 0, 0, 2, 'ROBOTS Army');
+        RAISE NOTICE 'Inserted ROBOTS Army (2P)';
     ELSE
-        RAISE NOTICE 'ROBOTS Army (2-player) already exists.';
+        RAISE NOTICE 'ROBOTS Army (2P) already exists';
     END IF;
 
-    -- Check if 'ROBOTS Army' exists for 3 players
-    RAISE NOTICE 'Checking if ROBOTS Army (3-player) exists...';
-    IF NOT EXISTS (SELECT 1 FROM stages WHERE label = 'ROBOTS Army' AND players = 3) THEN
-        RAISE NOTICE 'Inserting ROBOTS Army (3-player)...';
-        INSERT INTO stages (stake_amount, entry_fee, winner_payout, players, label)
+    -- Insert ROBOTS Army (3-player)
+    IF NOT EXISTS (
+        SELECT 1 FROM stakes WHERE label = 'ROBOTS Army' AND players = 3
+    ) THEN
+        INSERT INTO stakes (stake_amount, entry_fee, winner_payout, players, label)
         VALUES (0, 0, 0, 3, 'ROBOTS Army');
+        RAISE NOTICE 'Inserted ROBOTS Army (3P)';
     ELSE
-        RAISE NOTICE 'ROBOTS Army (3-player) already exists.';
+        RAISE NOTICE 'ROBOTS Army (3P) already exists';
     END IF;
-END \$\$;
-EOF
+END $$;
+SQL
 
-echo "Stage inspection and modification completed." >> "$OUTPUT_FILE"
+echo "ROBOTS Army stage patch applied." >> "$OUTPUT_FILE"
 
-# Inspect all tables and export data
+# Dump full DB
 TABLES=$(psql "$DATABASE_URL" -At -c "SELECT tablename FROM pg_tables WHERE schemaname='public';")
 
 for t in $TABLES; do
@@ -64,4 +50,4 @@ for t in $TABLES; do
   echo "" >> "$OUTPUT_FILE"
 done
 
-echo "Full database inspection completed. Data exported to $OUTPUT_FILE"
+echo "Inspection completed and saved to $OUTPUT_FILE"
