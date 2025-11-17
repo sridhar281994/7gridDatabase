@@ -1,8 +1,8 @@
-name: Daily PostgreSQL Inspection2
+name: ostgreSQL Inspection
 
 on:
   schedule:
-    - cron: "0 1 * * *"
+    - cron: "0 1 * * *"   # Runs daily at 01:00 UTC
   workflow_dispatch:
 
 jobs:
@@ -18,11 +18,10 @@ jobs:
       - name: Create directories
         run: mkdir -p backup/db_inspect scripts
 
-      - name: Run database inspection
+      - name: Run database inspection and modification
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: |
-          psql "$DATABASE_URL" -f scripts/modify_sql.sql
+        run: bash scripts/modify_sql.sql
 
       - name: Upload inspection artifact
         uses: actions/upload-artifact@v4
