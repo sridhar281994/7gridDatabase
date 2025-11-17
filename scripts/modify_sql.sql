@@ -1,12 +1,24 @@
-#!/bin/bash
-set -e
+-- -------------------------
+-- SQL Script to Inspect and Modify Database for "ROBOTS Army" Stage
+-- -------------------------
 
-echo "Starting PostgreSQL inspection and modification..."
+-- Check and add ROBOTS Army for 2-player mode
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM stages WHERE label = 'ROBOTS Army' AND players = 2) THEN
+        INSERT INTO stages (stake_amount, entry_fee, winner_payout, players, label)
+        VALUES (0, 0, 0, 2, 'ROBOTS Army');
+    END IF;
+END $$;
 
-# Define the path for the SQL script
-SQL_SCRIPT_PATH="scripts/modify_sql.sql"
+-- Check and add ROBOTS Army for 3-player mode
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM stages WHERE label = 'ROBOTS Army' AND players = 3) THEN
+        INSERT INTO stages (stake_amount, entry_fee, winner_payout, players, label)
+        VALUES (0, 0, 0, 3, 'ROBOTS Army');
+    END IF;
+END $$;
 
-# Run the SQL script using psql
-psql "$DATABASE_URL" -f "$SQL_SCRIPT_PATH"
-
-echo "Database inspection and modification completed successfully."
+-- Example: Check all entries in the 'stages' table
+SELECT id, stake_amount, entry_fee, winner_payout, players, label FROM stages;
