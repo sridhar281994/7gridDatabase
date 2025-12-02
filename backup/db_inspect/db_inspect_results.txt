@@ -25,15 +25,22 @@ Indexes:
     "users_email_key" UNIQUE CONSTRAINT, btree (email)
     "users_phone_key" UNIQUE CONSTRAINT, btree (phone)
 Referenced by:
+    TABLE "admin_mfa_secrets" CONSTRAINT "admin_mfa_secrets_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
     TABLE "game_matches" CONSTRAINT "game_matches_p1_user_id_fkey" FOREIGN KEY (p1_user_id) REFERENCES users(id) ON DELETE CASCADE
     TABLE "game_matches" CONSTRAINT "game_matches_p2_user_id_fkey" FOREIGN KEY (p2_user_id) REFERENCES users(id) ON DELETE CASCADE
     TABLE "game_matches" CONSTRAINT "game_matches_p3_user_id_fkey" FOREIGN KEY (p3_user_id) REFERENCES users(id) ON DELETE CASCADE
+    TABLE "kyc_snapshots" CONSTRAINT "kyc_snapshots_reviewed_by_fkey" FOREIGN KEY (reviewed_by) REFERENCES users(id)
+    TABLE "kyc_snapshots" CONSTRAINT "kyc_snapshots_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
     TABLE "matches" CONSTRAINT "matches_merchant_user_id_fkey" FOREIGN KEY (merchant_user_id) REFERENCES users(id)
     TABLE "matches" CONSTRAINT "matches_p1_user_id_fkey" FOREIGN KEY (p1_user_id) REFERENCES users(id)
     TABLE "matches" CONSTRAINT "matches_p2_user_id_fkey" FOREIGN KEY (p2_user_id) REFERENCES users(id)
     TABLE "matches" CONSTRAINT "matches_p3_user_id_fkey" FOREIGN KEY (p3_user_id) REFERENCES users(id)
     TABLE "matches" CONSTRAINT "matches_winner_user_id_fkey" FOREIGN KEY (winner_user_id) REFERENCES users(id)
+    TABLE "payout_audit_logs" CONSTRAINT "payout_audit_logs_admin_id_fkey" FOREIGN KEY (admin_id) REFERENCES users(id)
+    TABLE "wallet_bridge_tokens" CONSTRAINT "wallet_bridge_tokens_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+    TABLE "wallet_device_codes" CONSTRAINT "wallet_device_codes_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
     TABLE "wallet_transactions" CONSTRAINT "wallet_transactions_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+    TABLE "withdrawals" CONSTRAINT "withdrawals_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
 Triggers:
     update_users_modtime BEFORE UPDATE ON users FOR EACH ROW EXECUTE FUNCTION update_users_modtime()
 Access method: heap
@@ -90,6 +97,8 @@ Indexes:
     "wallet_transactions_transaction_id_key" UNIQUE CONSTRAINT, btree (transaction_id)
 Foreign-key constraints:
     "wallet_transactions_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+Referenced by:
+    TABLE "withdrawals" CONSTRAINT "withdrawals_wallet_tx_id_fkey" FOREIGN KEY (wallet_tx_id) REFERENCES wallet_transactions(id) ON DELETE CASCADE
 Access method: heap
 
 
@@ -1551,7 +1560,10 @@ Access method: heap
  756 | 7200553957 | 752663 | f    | 2025-11-30 14:25:03.430703+00 | 2025-11-30 14:20:03.426544+00
  757 | 7200553957 | 323713 | t    | 2025-11-30 14:40:23.49854+00  | 2025-11-30 14:35:23.494762+00
  758 | 7200553957 | 138867 | t    | 2025-11-30 14:46:10.465963+00 | 2025-11-30 14:41:10.461563+00
-(758 rows)
+ 759 | 7200553957 | 996298 | f    | 2025-12-01 08:43:50.788764+00 | 2025-12-01 08:38:50.784864+00
+ 760 | 7200553957 | 318592 | t    | 2025-12-01 08:43:51.221757+00 | 2025-12-01 08:38:51.21848+00
+ 761 | 7200553957 | 829331 | t    | 2025-12-02 00:27:29.078828+00 | 2025-12-02 00:22:29.073928+00
+(761 rows)
 
 
 ===== TABLE: stages =====
@@ -1634,6 +1646,167 @@ Access method: heap
 
  id | p1_user_id | p2_user_id | p3_user_id | current_turn | last_roll | status | forfeit_ids | active_player_count | created_at | updated_at 
 ----+------------+------------+------------+--------------+-----------+--------+-------------+---------------------+------------+------------
+(0 rows)
+
+
+===== TABLE: withdrawals =====
+                                                                   Table "public.withdrawals"
+    Column     |           Type           | Collation | Nullable |                 Default                 | Storage  | Compression | Stats target | Description 
+---------------+--------------------------+-----------+----------+-----------------------------------------+----------+-------------+--------------+-------------
+ id            | integer                  |           | not null | nextval('withdrawals_id_seq'::regclass) | plain    |             |              | 
+ user_id       | integer                  |           | not null |                                         | plain    |             |              | 
+ wallet_tx_id  | integer                  |           | not null |                                         | plain    |             |              | 
+ amount        | numeric(10,2)            |           | not null |                                         | main     |             |              | 
+ method        | withdrawalmethod         |           | not null |                                         | plain    |             |              | 
+ account       | character varying(255)   |           | not null |                                         | extended |             |              | 
+ status        | withdrawalstatus         |           | not null | 'pending'::withdrawalstatus             | plain    |             |              | 
+ payout_txn_id | character varying(255)   |           |          |                                         | extended |             |              | 
+ details       | text                     |           |          |                                         | extended |             |              | 
+ created_at    | timestamp with time zone |           | not null | now()                                   | plain    |             |              | 
+ updated_at    | timestamp with time zone |           |          |                                         | plain    |             |              | 
+Indexes:
+    "withdrawals_pkey" PRIMARY KEY, btree (id)
+    "idx_withdrawals_method" btree (method)
+    "idx_withdrawals_status" btree (status)
+    "withdrawals_wallet_tx_id_key" UNIQUE CONSTRAINT, btree (wallet_tx_id)
+Foreign-key constraints:
+    "withdrawals_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+    "withdrawals_wallet_tx_id_fkey" FOREIGN KEY (wallet_tx_id) REFERENCES wallet_transactions(id) ON DELETE CASCADE
+Referenced by:
+    TABLE "payout_audit_logs" CONSTRAINT "payout_audit_logs_withdrawal_id_fkey" FOREIGN KEY (withdrawal_id) REFERENCES withdrawals(id)
+Access method: heap
+
+
+ id | user_id | wallet_tx_id | amount | method | account | status | payout_txn_id | details | created_at | updated_at 
+----+---------+--------------+--------+--------+---------+--------+---------------+---------+------------+------------
+(0 rows)
+
+
+===== TABLE: wallet_bridge_tokens =====
+                                                                      Table "public.wallet_bridge_tokens"
+       Column       |           Type           | Collation | Nullable |                     Default                      | Storage  | Compression | Stats target | Description 
+--------------------+--------------------------+-----------+----------+--------------------------------------------------+----------+-------------+--------------+-------------
+ id                 | integer                  |           | not null | nextval('wallet_bridge_tokens_id_seq'::regclass) | plain    |             |              | 
+ user_id            | integer                  |           | not null |                                                  | plain    |             |              | 
+ token              | character varying(128)   |           | not null |                                                  | extended |             |              | 
+ channel            | character varying(32)    |           | not null |                                                  | extended |             |              | 
+ device_fingerprint | character varying(128)   |           |          |                                                  | extended |             |              | 
+ expires_at         | timestamp with time zone |           | not null |                                                  | plain    |             |              | 
+ created_at         | timestamp with time zone |           |          | now()                                            | plain    |             |              | 
+Indexes:
+    "wallet_bridge_tokens_pkey" PRIMARY KEY, btree (id)
+    "ix_wallet_bridge_tokens_id" btree (id)
+    "wallet_bridge_tokens_token_key" UNIQUE CONSTRAINT, btree (token)
+Foreign-key constraints:
+    "wallet_bridge_tokens_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+Access method: heap
+
+
+ id | user_id |                    token                    | channel |                        device_fingerprint                        |          expires_at          |          created_at           
+----+---------+---------------------------------------------+---------+------------------------------------------------------------------+------------------------------+-------------------------------
+  1 |       2 | SDlWA0r2JJVjRaaOgqJT7IaOHsozv8hwMsg-Mc_DQDA | web     | bcea973b42c25e2780c70435dae7b4a0b056ed5c18f9773847961d1ca4c021bf | 2025-12-02 00:26:23.25479+00 | 2025-12-02 00:23:23.243831+00
+(1 row)
+
+
+===== TABLE: wallet_device_codes =====
+                                                                      Table "public.wallet_device_codes"
+       Column       |           Type           | Collation | Nullable |                     Default                     | Storage  | Compression | Stats target | Description 
+--------------------+--------------------------+-----------+----------+-------------------------------------------------+----------+-------------+--------------+-------------
+ id                 | integer                  |           | not null | nextval('wallet_device_codes_id_seq'::regclass) | plain    |             |              | 
+ user_id            | integer                  |           | not null |                                                 | plain    |             |              | 
+ code               | character varying(12)    |           | not null |                                                 | extended |             |              | 
+ channel            | character varying(32)    |           | not null |                                                 | extended |             |              | 
+ device_fingerprint | character varying(128)   |           |          |                                                 | extended |             |              | 
+ expires_at         | timestamp with time zone |           | not null |                                                 | plain    |             |              | 
+ used_at            | timestamp with time zone |           |          |                                                 | plain    |             |              | 
+ created_at         | timestamp with time zone |           |          | now()                                           | plain    |             |              | 
+Indexes:
+    "wallet_device_codes_pkey" PRIMARY KEY, btree (id)
+    "ix_wallet_device_codes_id" btree (id)
+    "wallet_device_codes_code_key" UNIQUE CONSTRAINT, btree (code)
+Foreign-key constraints:
+    "wallet_device_codes_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+Access method: heap
+
+
+ id | user_id | code | channel | device_fingerprint | expires_at | used_at | created_at 
+----+---------+------+---------+--------------------+------------+---------+------------
+(0 rows)
+
+
+===== TABLE: payout_audit_logs =====
+                                                                    Table "public.payout_audit_logs"
+     Column      |           Type           | Collation | Nullable |                    Default                    | Storage  | Compression | Stats target | Description 
+-----------------+--------------------------+-----------+----------+-----------------------------------------------+----------+-------------+--------------+-------------
+ id              | integer                  |           | not null | nextval('payout_audit_logs_id_seq'::regclass) | plain    |             |              | 
+ withdrawal_id   | integer                  |           | not null |                                               | plain    |             |              | 
+ admin_id        | integer                  |           |          |                                               | plain    |             |              | 
+ action          | character varying(64)    |           | not null |                                               | extended |             |              | 
+ status_before   | character varying(32)    |           |          |                                               | extended |             |              | 
+ status_after    | character varying(32)    |           |          |                                               | extended |             |              | 
+ ip_address      | character varying(64)    |           |          |                                               | extended |             |              | 
+ user_agent      | character varying(256)   |           |          |                                               | extended |             |              | 
+ details         | text                     |           |          |                                               | extended |             |              | 
+ provider_txn_id | character varying(128)   |           |          |                                               | extended |             |              | 
+ created_at      | timestamp with time zone |           |          | now()                                         | plain    |             |              | 
+Indexes:
+    "payout_audit_logs_pkey" PRIMARY KEY, btree (id)
+    "ix_payout_audit_logs_id" btree (id)
+Foreign-key constraints:
+    "payout_audit_logs_admin_id_fkey" FOREIGN KEY (admin_id) REFERENCES users(id)
+    "payout_audit_logs_withdrawal_id_fkey" FOREIGN KEY (withdrawal_id) REFERENCES withdrawals(id)
+Access method: heap
+
+
+ id | withdrawal_id | admin_id | action | status_before | status_after | ip_address | user_agent | details | provider_txn_id | created_at 
+----+---------------+----------+--------+---------------+--------------+------------+------------+---------+-----------------+------------
+(0 rows)
+
+
+===== TABLE: admin_mfa_secrets =====
+                                                  Table "public.admin_mfa_secrets"
+      Column      |           Type           | Collation | Nullable | Default | Storage  | Compression | Stats target | Description 
+------------------+--------------------------+-----------+----------+---------+----------+-------------+--------------+-------------
+ user_id          | integer                  |           | not null |         | plain    |             |              | 
+ secret           | character varying(64)    |           | not null |         | extended |             |              | 
+ enabled_at       | timestamp with time zone |           |          | now()   | plain    |             |              | 
+ last_verified_at | timestamp with time zone |           |          |         | plain    |             |              | 
+Indexes:
+    "admin_mfa_secrets_pkey" PRIMARY KEY, btree (user_id)
+Foreign-key constraints:
+    "admin_mfa_secrets_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+Access method: heap
+
+
+ user_id | secret | enabled_at | last_verified_at 
+---------+--------+------------+------------------
+(0 rows)
+
+
+===== TABLE: kyc_snapshots =====
+                                                                   Table "public.kyc_snapshots"
+    Column     |           Type           | Collation | Nullable |                  Default                  | Storage  | Compression | Stats target | Description 
+---------------+--------------------------+-----------+----------+-------------------------------------------+----------+-------------+--------------+-------------
+ id            | integer                  |           | not null | nextval('kyc_snapshots_id_seq'::regclass) | plain    |             |              | 
+ user_id       | integer                  |           | not null |                                           | plain    |             |              | 
+ status        | character varying(32)    |           | not null |                                           | extended |             |              | 
+ document_type | character varying(64)    |           |          |                                           | extended |             |              | 
+ document_ref  | character varying(128)   |           |          |                                           | extended |             |              | 
+ data          | jsonb                    |           |          |                                           | extended |             |              | 
+ reviewed_by   | integer                  |           |          |                                           | plain    |             |              | 
+ reviewed_at   | timestamp with time zone |           |          |                                           | plain    |             |              | 
+ created_at    | timestamp with time zone |           |          | now()                                     | plain    |             |              | 
+Indexes:
+    "kyc_snapshots_pkey" PRIMARY KEY, btree (id)
+    "ix_kyc_snapshots_id" btree (id)
+Foreign-key constraints:
+    "kyc_snapshots_reviewed_by_fkey" FOREIGN KEY (reviewed_by) REFERENCES users(id)
+    "kyc_snapshots_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+Access method: heap
+
+
+ id | user_id | status | document_type | document_ref | data | reviewed_by | reviewed_at | created_at 
+----+---------+--------+---------------+--------------+------+-------------+-------------+------------
 (0 rows)
 
 
