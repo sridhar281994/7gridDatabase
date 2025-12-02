@@ -6,7 +6,7 @@ on:
       sql_path:
         description: "Path to the SQL migration file"
         required: false
-        default: "migrations/001_add_withdrawals.sql"
+        default: "migrations/002_wallet_metadata.sql"
 
 jobs:
   migrate:
