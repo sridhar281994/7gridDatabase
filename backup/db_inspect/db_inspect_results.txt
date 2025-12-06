@@ -3,82 +3,6 @@ NOTICE:  ROBOTS Army (2P) already exists
 NOTICE:  ROBOTS Army (3P) already exists
 DO
 ROBOTS Army stage patch applied.
-===== TABLE: users =====
-                                                                    Table "public.users"
-     Column     |           Type           | Collation | Nullable |              Default              | Storage  | Compression | Stats target | Description 
-----------------+--------------------------+-----------+----------+-----------------------------------+----------+-------------+--------------+-------------
- id             | integer                  |           | not null | nextval('users_id_seq'::regclass) | plain    |             |              | 
- phone          | character varying        |           | not null |                                   | extended |             |              | 
- email          | character varying        |           | not null |                                   | extended |             |              | 
- password_hash  | character varying        |           | not null |                                   | extended |             |              | 
- name           | character varying        |           |          |                                   | extended |             |              | 
- upi_id         | character varying        |           |          |                                   | extended |             |              | 
- description    | character varying(50)    |           |          |                                   | extended |             |              | 
- wallet_balance | numeric(10,2)            |           |          |                                   | main     |             |              | 
- profile_image  | character varying        |           |          |                                   | extended |             |              | 
- created_at     | timestamp with time zone |           |          | now()                             | plain    |             |              | 
- updated_at     | timestamp with time zone |           |          |                                   | plain    |             |              | 
- is_agent       | boolean                  |           |          | false                             | plain    |             |              | 
-Indexes:
-    "users_pkey" PRIMARY KEY, btree (id)
-    "ix_users_id" btree (id)
-    "users_email_key" UNIQUE CONSTRAINT, btree (email)
-    "users_phone_key" UNIQUE CONSTRAINT, btree (phone)
-Referenced by:
-    TABLE "admin_mfa_secrets" CONSTRAINT "admin_mfa_secrets_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
-    TABLE "game_matches" CONSTRAINT "game_matches_p1_user_id_fkey" FOREIGN KEY (p1_user_id) REFERENCES users(id) ON DELETE CASCADE
-    TABLE "game_matches" CONSTRAINT "game_matches_p2_user_id_fkey" FOREIGN KEY (p2_user_id) REFERENCES users(id) ON DELETE CASCADE
-    TABLE "game_matches" CONSTRAINT "game_matches_p3_user_id_fkey" FOREIGN KEY (p3_user_id) REFERENCES users(id) ON DELETE CASCADE
-    TABLE "kyc_snapshots" CONSTRAINT "kyc_snapshots_reviewed_by_fkey" FOREIGN KEY (reviewed_by) REFERENCES users(id)
-    TABLE "kyc_snapshots" CONSTRAINT "kyc_snapshots_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
-    TABLE "matches" CONSTRAINT "matches_merchant_user_id_fkey" FOREIGN KEY (merchant_user_id) REFERENCES users(id)
-    TABLE "matches" CONSTRAINT "matches_p1_user_id_fkey" FOREIGN KEY (p1_user_id) REFERENCES users(id)
-    TABLE "matches" CONSTRAINT "matches_p2_user_id_fkey" FOREIGN KEY (p2_user_id) REFERENCES users(id)
-    TABLE "matches" CONSTRAINT "matches_p3_user_id_fkey" FOREIGN KEY (p3_user_id) REFERENCES users(id)
-    TABLE "matches" CONSTRAINT "matches_winner_user_id_fkey" FOREIGN KEY (winner_user_id) REFERENCES users(id)
-    TABLE "payout_audit_logs" CONSTRAINT "payout_audit_logs_admin_id_fkey" FOREIGN KEY (admin_id) REFERENCES users(id)
-    TABLE "wallet_bridge_tokens" CONSTRAINT "wallet_bridge_tokens_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
-    TABLE "wallet_device_codes" CONSTRAINT "wallet_device_codes_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
-    TABLE "wallet_transactions" CONSTRAINT "wallet_transactions_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
-    TABLE "withdrawals" CONSTRAINT "withdrawals_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
-Triggers:
-    update_users_modtime BEFORE UPDATE ON users FOR EACH ROW EXECUTE FUNCTION update_users_modtime()
-Access method: heap
-
-
-  id   |    phone    |           email           |                                    password_hash                                    |      name       | upi_id |            description            | wallet_balance |   profile_image    |          created_at           |          updated_at           | is_agent 
--------+-------------+---------------------------+-------------------------------------------------------------------------------------+-----------------+--------+-----------------------------------+----------------+--------------------+-------------------------------+-------------------------------+----------
- 10016 | agent_10016 | agent_10016@system.local  | x                                                                                   | Agent 10016     |        |                                   |          99.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-17 10:49:14.328276+00 | f
-     4 | 1234567890  | sridharc982@gmail.com     | $2b$12$StJg3yp7V/YpZTpP5IEFku5Qkl00JRRVS0zV81BSHf.JiaRkbTilK                        | sridharc98      |        |                                   |           0.00 | assets/default.png | 2025-10-24 20:23:32.421971+00 | 2025-10-24 21:35:20.763906+00 | f
-     0 | 0000000000  | merchant@system.local     | system                                                                              | System Merchant |        | System auto-account for game fees |           0.00 | assets/default.png | 2025-11-09 21:58:35.505102+00 |                               | f
- 10005 | agent_10005 | agent_10005@system.local  | x                                                                                   | Agent 10005     |        |                                   |         101.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 13:31:32.745703+00 | f
- 10019 | agent_10019 | agent_10019@system.local  | x                                                                                   | Agent 10019     |        |                                   |          99.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-17 11:09:32.421644+00 | f
- 10012 | agent_10012 | agent_10012@system.local  | x                                                                                   | Agent 10012     |        |                                   |          97.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 13:32:09.811863+00 | f
- 10001 | agent_10001 | agent_10001@system.local  | x                                                                                   | Agent 10001     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f
- 10008 | agent_10008 | agent_10008@system.local  | x                                                                                   | Agent 10008     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f
- 10009 | agent_10009 | agent_10009@system.local  | x                                                                                   | Agent 10009     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f
- 10011 | agent_10011 | agent_10011@system.local  | x                                                                                   | Agent 10011     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f
- 10013 | agent_10013 | agent_10013@system.local  | x                                                                                   | Agent 10013     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f
- 10017 | agent_10017 | agent_10017@system.local  | x                                                                                   | Agent 10017     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f
- 10018 | agent_10018 | agent_10018@system.local  | x                                                                                   | Agent 10018     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f
- 10007 | agent_10007 | agent_10007@system.local  | x                                                                                   | Agent 10007     |        |                                   |          99.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 14:45:28.793083+00 | f
- 10010 | agent_10010 | agent_10010@system.local  | x                                                                                   | Agent 10010     |        |                                   |          98.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 13:02:08.107258+00 | f
- 10006 | agent_10006 | agent_10006@system.local  | x                                                                                   | Agent 10006     |        |                                   |          99.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 15:07:15.434487+00 | f
- -1000 | bot_sharp   | bot_sharp@system.local    | x                                                                                   | Sharp (Bot)     |        |                                   |           0.00 | assets/default.png | 2025-10-24 17:59:47.083826+00 | 2025-11-17 09:50:32.169312+00 | t
- -1001 | bot_crazy   | bot_crazy@system.local    | x                                                                                   | Crazy Boy (Bot) |        |                                   |           0.00 | assets/default.png | 2025-10-24 17:59:47.083826+00 | 2025-11-17 09:50:32.169312+00 | t
- -1002 | bot_srtech  | bot_srtech@system.local   | x                                                                                   | SRTech Bot      |        |                                   |           0.00 | assets/default.png | 2025-10-24 17:59:47.083826+00 | 2025-11-17 09:50:32.169312+00 | t
-     3 | 9360649151  | sridhar.christh@gmail.com | $2b$12$h/xnuXIEcqbkIJjY3vKij.qJ3XVAHyg/43UzylJGMAApWe1uOzGvi                        | sridhar.christh |        |                                   |         485.00 | assets/default.png | 2025-10-24 20:02:29.997866+00 | 2025-11-17 10:49:03.490626+00 | f
- 10002 | agent_10002 | agent_10002@system.local  | x                                                                                   | Agent 10002     |        |                                   |          99.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 16:39:01.810849+00 | f
- 10020 | agent_10020 | agent_10020@system.local  | x                                                                                   | Agent 10020     |        |                                   |          98.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 13:27:33.375378+00 | f
- 10014 | agent_10014 | agent_10014@system.local  | x                                                                                   | Agent 10014     |        |                                   |         101.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-19 17:25:35.517823+00 | f
-     2 | 7200553957  | sri.christh@gmail.com     | $2b$12$aHPsQwKcbdb7B6R0bvbfbuvPYP/DROpc7LYXQJe1iTBeIziIpSpk.                        | sri.christh     |        |                                   |         431.00 | assets/default.png | 2025-10-24 19:54:42.301455+00 | 2025-11-29 16:34:12.5433+00   | f
- 10004 | agent_10004 | agent_10004@system.local  | x                                                                                   | Agent 10004     |        |                                   |         102.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-30 09:15:45.406457+00 | f
- 10003 | agent_10003 | agent_10003@system.local  | x                                                                                   | Agent 10003     |        |                                   |         103.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-30 09:16:05.593914+00 | f
- 10015 | agent_10015 | agent_10015@system.local  | x                                                                                   | Agent 10015     |        |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-26 15:24:15.393323+00 | f
-     1 | 1234567899  | sri198528@gmail.com       | $bcrypt-sha256$v=2,t=2b,r=12$nDjIYGhe1ADxl/gU0prcIe$po.OfOzYEuh.W3hDhrdxlIDbUdaRira | sr1985!         |        |                                   |         475.00 | assets/default.png | 2025-10-24 18:17:57.089078+00 | 2025-11-29 16:33:56.292593+00 | f
-(28 rows)
-
-
 ===== TABLE: wallet_transactions =====
                                                                     Table "public.wallet_transactions"
      Column     |           Type           | Collation | Nullable |                     Default                     | Storage  | Compression | Stats target | Description 
@@ -581,12 +505,90 @@ Access method: heap
  324 |            2 |          1 |          2 |            |              2 |                0 | FINISHED |       1.00 | 2025-11-29 16:33:56.308196+00 | 2025-11-29 16:34:12.640262+00 |         5 |            1 |           2 | t          | {1}
  329 |            0 |          1 |          2 |            |              1 |                0 | FINISHED |       0.00 | 2025-11-30 12:49:34.542201+00 | 2025-11-30 12:50:02.168771+00 |         3 |            1 |           2 | t          | {2}
  325 |            0 |          2 |      10008 |            |          10008 |                0 | FINISHED |       0.00 | 2025-11-30 08:20:14.61986+00  | 2025-11-30 08:21:03.242881+00 |         5 |            1 |           2 | t          | {2}
+ 333 |            0 |          2 |      10003 |            |                |                0 | FINISHED |       0.00 | 2025-12-05 11:42:10.7409+00   |                               |         2 |            0 |           2 | t          | {}
  330 |            0 |          1 |          2 |            |              2 |                0 | FINISHED |       0.00 | 2025-11-30 12:50:14.337171+00 | 2025-11-30 12:53:02.843722+00 |           |            1 |           2 | t          | {1}
  326 |            0 |          2 |      10018 |            |          10018 |                0 | FINISHED |       0.00 | 2025-11-30 11:05:53.561627+00 | 2025-11-30 11:06:46.946632+00 |         1 |            0 |           2 | t          | {2}
  331 |            0 |          2 |      10015 |            |          10015 |                0 | FINISHED |       0.00 | 2025-11-30 13:01:36.457666+00 | 2025-11-30 13:02:03.506565+00 |         2 |            0 |           2 | t          | {2}
  332 |            0 |          2 |      10010 |            |          10010 |                0 | FINISHED |       0.00 | 2025-11-30 13:02:09.042403+00 | 2025-11-30 13:02:38.076827+00 |         5 |            0 |           2 | t          | {2}
  327 |            0 |          2 |      10007 |            |          10007 |                0 | FINISHED |       0.00 | 2025-11-30 12:32:06.887363+00 | 2025-11-30 12:33:04.446593+00 |         5 |            0 |           2 | t          | {2}
-(273 rows)
+(274 rows)
+
+
+===== TABLE: users =====
+                                                                    Table "public.users"
+     Column     |           Type           | Collation | Nullable |              Default              | Storage  | Compression | Stats target | Description 
+----------------+--------------------------+-----------+----------+-----------------------------------+----------+-------------+--------------+-------------
+ id             | integer                  |           | not null | nextval('users_id_seq'::regclass) | plain    |             |              | 
+ phone          | character varying        |           | not null |                                   | extended |             |              | 
+ email          | character varying        |           | not null |                                   | extended |             |              | 
+ password_hash  | character varying        |           | not null |                                   | extended |             |              | 
+ name           | character varying        |           |          |                                   | extended |             |              | 
+ upi_id         | character varying        |           |          |                                   | extended |             |              | 
+ description    | character varying(50)    |           |          |                                   | extended |             |              | 
+ wallet_balance | numeric(10,2)            |           |          |                                   | main     |             |              | 
+ profile_image  | character varying        |           |          |                                   | extended |             |              | 
+ created_at     | timestamp with time zone |           |          | now()                             | plain    |             |              | 
+ updated_at     | timestamp with time zone |           |          |                                   | plain    |             |              | 
+ is_agent       | boolean                  |           |          | false                             | plain    |             |              | 
+ paypal_id      | character varying(255)   |           |          |                                   | extended |             |              | 
+Indexes:
+    "users_pkey" PRIMARY KEY, btree (id)
+    "ix_users_id" btree (id)
+    "users_email_key" UNIQUE CONSTRAINT, btree (email)
+    "users_phone_key" UNIQUE CONSTRAINT, btree (phone)
+Referenced by:
+    TABLE "admin_mfa_secrets" CONSTRAINT "admin_mfa_secrets_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+    TABLE "game_matches" CONSTRAINT "game_matches_p1_user_id_fkey" FOREIGN KEY (p1_user_id) REFERENCES users(id) ON DELETE CASCADE
+    TABLE "game_matches" CONSTRAINT "game_matches_p2_user_id_fkey" FOREIGN KEY (p2_user_id) REFERENCES users(id) ON DELETE CASCADE
+    TABLE "game_matches" CONSTRAINT "game_matches_p3_user_id_fkey" FOREIGN KEY (p3_user_id) REFERENCES users(id) ON DELETE CASCADE
+    TABLE "kyc_snapshots" CONSTRAINT "kyc_snapshots_reviewed_by_fkey" FOREIGN KEY (reviewed_by) REFERENCES users(id)
+    TABLE "kyc_snapshots" CONSTRAINT "kyc_snapshots_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+    TABLE "matches" CONSTRAINT "matches_merchant_user_id_fkey" FOREIGN KEY (merchant_user_id) REFERENCES users(id)
+    TABLE "matches" CONSTRAINT "matches_p1_user_id_fkey" FOREIGN KEY (p1_user_id) REFERENCES users(id)
+    TABLE "matches" CONSTRAINT "matches_p2_user_id_fkey" FOREIGN KEY (p2_user_id) REFERENCES users(id)
+    TABLE "matches" CONSTRAINT "matches_p3_user_id_fkey" FOREIGN KEY (p3_user_id) REFERENCES users(id)
+    TABLE "matches" CONSTRAINT "matches_winner_user_id_fkey" FOREIGN KEY (winner_user_id) REFERENCES users(id)
+    TABLE "payout_audit_logs" CONSTRAINT "payout_audit_logs_admin_id_fkey" FOREIGN KEY (admin_id) REFERENCES users(id)
+    TABLE "wallet_bridge_tokens" CONSTRAINT "wallet_bridge_tokens_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+    TABLE "wallet_device_codes" CONSTRAINT "wallet_device_codes_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+    TABLE "wallet_transactions" CONSTRAINT "wallet_transactions_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+    TABLE "withdrawals" CONSTRAINT "withdrawals_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+Triggers:
+    update_users_modtime BEFORE UPDATE ON users FOR EACH ROW EXECUTE FUNCTION update_users_modtime()
+Access method: heap
+
+
+  id   |    phone    |           email           |                                    password_hash                                    |      name       |  upi_id  |            description            | wallet_balance |   profile_image    |          created_at           |          updated_at           | is_agent | paypal_id 
+-------+-------------+---------------------------+-------------------------------------------------------------------------------------+-----------------+----------+-----------------------------------+----------------+--------------------+-------------------------------+-------------------------------+----------+-----------
+ 10016 | agent_10016 | agent_10016@system.local  | x                                                                                   | Agent 10016     |          |                                   |          99.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-17 10:49:14.328276+00 | f        | 
+     4 | 1234567890  | sridharc982@gmail.com     | $2b$12$StJg3yp7V/YpZTpP5IEFku5Qkl00JRRVS0zV81BSHf.JiaRkbTilK                        | sridharc98      |          |                                   |           0.00 | assets/default.png | 2025-10-24 20:23:32.421971+00 | 2025-10-24 21:35:20.763906+00 | f        | 
+     0 | 0000000000  | merchant@system.local     | system                                                                              | System Merchant |          | System auto-account for game fees |           0.00 | assets/default.png | 2025-11-09 21:58:35.505102+00 |                               | f        | 
+ 10005 | agent_10005 | agent_10005@system.local  | x                                                                                   | Agent 10005     |          |                                   |         101.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 13:31:32.745703+00 | f        | 
+ 10019 | agent_10019 | agent_10019@system.local  | x                                                                                   | Agent 10019     |          |                                   |          99.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-17 11:09:32.421644+00 | f        | 
+ 10012 | agent_10012 | agent_10012@system.local  | x                                                                                   | Agent 10012     |          |                                   |          97.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 13:32:09.811863+00 | f        | 
+ 10001 | agent_10001 | agent_10001@system.local  | x                                                                                   | Agent 10001     |          |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f        | 
+ 10008 | agent_10008 | agent_10008@system.local  | x                                                                                   | Agent 10008     |          |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f        | 
+ 10009 | agent_10009 | agent_10009@system.local  | x                                                                                   | Agent 10009     |          |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f        | 
+ 10011 | agent_10011 | agent_10011@system.local  | x                                                                                   | Agent 10011     |          |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f        | 
+ 10013 | agent_10013 | agent_10013@system.local  | x                                                                                   | Agent 10013     |          |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f        | 
+ 10017 | agent_10017 | agent_10017@system.local  | x                                                                                   | Agent 10017     |          |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f        | 
+ 10018 | agent_10018 | agent_10018@system.local  | x                                                                                   | Agent 10018     |          |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f        | 
+ 10007 | agent_10007 | agent_10007@system.local  | x                                                                                   | Agent 10007     |          |                                   |          99.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 14:45:28.793083+00 | f        | 
+ 10010 | agent_10010 | agent_10010@system.local  | x                                                                                   | Agent 10010     |          |                                   |          98.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 13:02:08.107258+00 | f        | 
+ 10006 | agent_10006 | agent_10006@system.local  | x                                                                                   | Agent 10006     |          |                                   |          99.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 15:07:15.434487+00 | f        | 
+ -1000 | bot_sharp   | bot_sharp@system.local    | x                                                                                   | Sharp (Bot)     |          |                                   |           0.00 | assets/default.png | 2025-10-24 17:59:47.083826+00 | 2025-11-17 09:50:32.169312+00 | t        | 
+ -1001 | bot_crazy   | bot_crazy@system.local    | x                                                                                   | Crazy Boy (Bot) |          |                                   |           0.00 | assets/default.png | 2025-10-24 17:59:47.083826+00 | 2025-11-17 09:50:32.169312+00 | t        | 
+ -1002 | bot_srtech  | bot_srtech@system.local   | x                                                                                   | SRTech Bot      |          |                                   |           0.00 | assets/default.png | 2025-10-24 17:59:47.083826+00 | 2025-11-17 09:50:32.169312+00 | t        | 
+ 10002 | agent_10002 | agent_10002@system.local  | x                                                                                   | Agent 10002     |          |                                   |          99.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 16:39:01.810849+00 | f        | 
+ 10020 | agent_10020 | agent_10020@system.local  | x                                                                                   | Agent 10020     |          |                                   |          98.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 13:27:33.375378+00 | f        | 
+ 10014 | agent_10014 | agent_10014@system.local  | x                                                                                   | Agent 10014     |          |                                   |         101.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-19 17:25:35.517823+00 | f        | 
+ 10004 | agent_10004 | agent_10004@system.local  | x                                                                                   | Agent 10004     |          |                                   |         102.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-30 09:15:45.406457+00 | f        | 
+ 10003 | agent_10003 | agent_10003@system.local  | x                                                                                   | Agent 10003     |          |                                   |         103.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-30 09:16:05.593914+00 | f        | 
+ 10015 | agent_10015 | agent_10015@system.local  | x                                                                                   | Agent 10015     |          |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-26 15:24:15.393323+00 | f        | 
+     1 | 1234567899  | sri198528@gmail.com       | $bcrypt-sha256$v=2,t=2b,r=12$nDjIYGhe1ADxl/gU0prcIe$po.OfOzYEuh.W3hDhrdxlIDbUdaRira | sr1985!         |          |                                   |         475.00 | assets/default.png | 2025-10-24 18:17:57.089078+00 | 2025-11-29 16:33:56.292593+00 | f        | 
+     2 | 7200553957  | sri.christh@gmail.com     | $2b$12$QKmZ0bVwblldslIWxHwOP.9GY42eaLUno1fLEU6H1oYQXLnOVtFAS                        | sri.christh     | upi@hfcd | Something funny da i am. Do       |         431.00 | assets/default.png | 2025-10-24 19:54:42.301455+00 | 2025-12-05 21:40:59.066732+00 | f        | paythus
+     3 | 9360649151  | sridhar.christh@gmail.com | $2b$12$h/xnuXIEcqbkIJjY3vKij.qJ3XVAHyg/43UzylJGMAApWe1uOzGvi                        | sridhar.christh |          | something good                    |         485.00 | assets/default.png | 2025-10-24 20:02:29.997866+00 | 2025-12-05 23:09:04.802092+00 | f        | 
+(28 rows)
 
 
 ===== TABLE: match_inspection =====
@@ -1570,7 +1572,53 @@ Access method: heap
  766 | 7200553957 | 776815 | f    | 2025-12-04 19:36:40.25527+00  | 2025-12-04 19:31:40.247331+00
  767 | 7200553957 | 857102 | t    | 2025-12-04 19:37:17.851435+00 | 2025-12-04 19:32:17.846007+00
  768 | 7200553957 | 646466 | t    | 2025-12-04 20:14:48.541762+00 | 2025-12-04 20:09:48.535847+00
-(768 rows)
+ 769 | 7200553957 | 990016 | f    | 2025-12-05 11:05:55.597721+00 | 2025-12-05 11:00:55.567748+00
+ 770 | 7200553957 | 522764 | t    | 2025-12-05 11:05:55.701998+00 | 2025-12-05 11:00:55.64888+00
+ 771 | 7200553957 | 126266 | t    | 2025-12-05 11:22:14.338183+00 | 2025-12-05 11:17:14.329867+00
+ 772 | 7200553957 | 304910 | t    | 2025-12-05 11:37:06.323717+00 | 2025-12-05 11:32:06.30564+00
+ 773 | 7200553957 | 900351 | t    | 2025-12-05 11:46:05.813078+00 | 2025-12-05 11:41:05.806786+00
+ 774 | 7200553957 | 894932 | t    | 2025-12-05 12:25:12.511581+00 | 2025-12-05 12:20:12.500918+00
+ 775 | 7200553957 | 220217 | t    | 2025-12-05 12:27:25.853392+00 | 2025-12-05 12:22:25.849681+00
+ 776 | 7200553957 | 347380 | t    | 2025-12-05 12:43:25.26837+00  | 2025-12-05 12:38:25.264948+00
+ 777 | 7200553957 | 957494 | t    | 2025-12-05 12:44:20.75426+00  | 2025-12-05 12:39:20.750512+00
+ 778 | 7200553957 | 229712 | t    | 2025-12-05 13:04:06.297501+00 | 2025-12-05 12:59:06.208108+00
+ 779 | 7200553957 | 713828 | f    | 2025-12-05 13:38:16.300056+00 | 2025-12-05 13:33:16.203663+00
+ 780 | 7200553957 | 665660 | t    | 2025-12-05 13:38:16.916718+00 | 2025-12-05 13:33:16.908914+00
+ 781 | 7200553957 | 445310 | t    | 2025-12-05 13:41:28.953185+00 | 2025-12-05 13:36:28.946352+00
+ 782 | 7200553957 | 746246 | f    | 2025-12-05 14:23:32.933472+00 | 2025-12-05 14:18:32.927305+00
+ 783 | 7200553957 | 680780 | t    | 2025-12-05 14:23:33.313181+00 | 2025-12-05 14:18:33.306805+00
+ 784 | 7200553957 | 675433 | t    | 2025-12-05 14:32:50.924301+00 | 2025-12-05 14:27:50.918159+00
+ 785 | 7200553957 | 477706 | t    | 2025-12-05 14:48:52.861162+00 | 2025-12-05 14:43:52.854383+00
+ 786 | 7200553957 | 852806 | t    | 2025-12-05 14:55:34.698728+00 | 2025-12-05 14:50:34.693082+00
+ 787 | 7200553957 | 523685 | f    | 2025-12-05 15:46:41.062222+00 | 2025-12-05 15:41:41.057619+00
+ 788 | 7200553957 | 360171 | t    | 2025-12-05 15:46:41.442471+00 | 2025-12-05 15:41:41.438329+00
+ 789 | 7200553957 | 779043 | t    | 2025-12-05 15:54:20.706186+00 | 2025-12-05 15:49:20.702273+00
+ 790 | 7200553957 | 417376 | t    | 2025-12-05 16:16:50.029626+00 | 2025-12-05 16:11:50.0219+00
+ 791 | 7200553957 | 735142 | t    | 2025-12-05 16:26:42.525143+00 | 2025-12-05 16:21:42.521272+00
+ 792 | 7200553957 | 372950 | t    | 2025-12-05 16:36:50.727009+00 | 2025-12-05 16:31:50.720667+00
+ 793 | 7200553957 | 635531 | t    | 2025-12-05 16:54:25.798264+00 | 2025-12-05 16:49:25.708872+00
+ 794 | 7200553957 | 406208 | f    | 2025-12-05 17:10:54.759885+00 | 2025-12-05 17:05:54.754105+00
+ 795 | 7200553957 | 931226 | t    | 2025-12-05 17:12:00.828305+00 | 2025-12-05 17:07:00.823201+00
+ 796 | 7200553957 | 559810 | t    | 2025-12-05 17:13:08.565272+00 | 2025-12-05 17:08:08.558343+00
+ 797 | 7200553957 | 900922 | f    | 2025-12-05 19:04:00.303943+00 | 2025-12-05 18:59:00.299197+00
+ 798 | 7200553957 | 897991 | f    | 2025-12-05 19:04:00.398928+00 | 2025-12-05 18:59:00.20194+00
+ 799 | 7200553957 | 907189 | t    | 2025-12-05 19:04:01.806745+00 | 2025-12-05 18:59:01.801471+00
+ 800 | 7200553957 | 124248 | t    | 2025-12-05 19:06:33.058173+00 | 2025-12-05 19:01:33.054641+00
+ 801 | 7200553957 | 988601 | t    | 2025-12-05 19:11:20.525541+00 | 2025-12-05 19:06:20.516769+00
+ 802 | 7200553957 | 214062 | t    | 2025-12-05 19:12:46.496961+00 | 2025-12-05 19:07:46.478474+00
+ 803 | 7200553957 | 682264 | t    | 2025-12-05 19:29:24.650706+00 | 2025-12-05 19:24:24.646009+00
+ 804 | 7200553957 | 674846 | t    | 2025-12-05 19:30:15.997908+00 | 2025-12-05 19:25:15.936096+00
+ 805 | 7200553957 | 390091 | f    | 2025-12-05 21:29:56.976514+00 | 2025-12-05 21:24:56.970807+00
+ 806 | 7200553957 | 387717 | t    | 2025-12-05 21:29:57.20773+00  | 2025-12-05 21:24:57.096254+00
+ 807 | 7200553957 | 321172 | t    | 2025-12-05 21:45:27.151595+00 | 2025-12-05 21:40:27.143539+00
+ 808 | 7200553957 | 695514 | t    | 2025-12-05 21:46:11.439123+00 | 2025-12-05 21:41:11.433322+00
+ 809 | 7200553957 | 533595 | f    | 2025-12-05 22:17:46.733623+00 | 2025-12-05 22:12:46.728437+00
+ 810 | 7200553957 | 851789 | t    | 2025-12-05 22:17:46.900774+00 | 2025-12-05 22:12:46.811765+00
+ 811 | 7200553957 | 881048 | t    | 2025-12-05 22:50:54.053313+00 | 2025-12-05 22:45:54.047338+00
+ 812 | 9360649151 | 183696 | t    | 2025-12-05 23:11:43.35083+00  | 2025-12-05 23:06:43.344694+00
+ 813 | 7200553957 | 129865 | t    | 2025-12-05 23:27:30.698226+00 | 2025-12-05 23:22:30.692236+00
+ 814 | 7200553957 | 296326 | t    | 2025-12-05 23:38:54.298024+00 | 2025-12-05 23:33:54.292798+00
+(814 rows)
 
 
 ===== TABLE: stages =====
