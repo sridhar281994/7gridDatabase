@@ -1,5 +1,6 @@
  id  | stake_amount |     player1     |     player2     |     player3     |     winner      |    merchant     |  status  | system_fee |          created_at           |          finished_at          | current_turn | num_players | refundable | forfeit_ids 
 -----+--------------+-----------------+-----------------+-----------------+-----------------+-----------------+----------+------------+-------------------------------+-------------------------------+--------------+-------------+------------+-------------
+ 334 |            0 | sri.christh     | Agent 10002     |                 |                 | System Merchant | FINISHED |       0.00 | 2025-12-06 16:50:10.39197+00  |                               |            0 |           2 | t          | {}
  333 |            0 | sri.christh     | Agent 10003     |                 |                 | System Merchant | FINISHED |       0.00 | 2025-12-05 11:42:10.7409+00   |                               |            0 |           2 | t          | {}
  332 |            0 | sri.christh     | Agent 10010     |                 | Agent 10010     | System Merchant | FINISHED |       0.00 | 2025-11-30 13:02:09.042403+00 | 2025-11-30 13:02:38.076827+00 |            0 |           2 | t          | {2}
  331 |            0 | sri.christh     | Agent 10015     |                 | Agent 10015     | System Merchant | FINISHED |       0.00 | 2025-11-30 13:01:36.457666+00 | 2025-11-30 13:02:03.506565+00 |            0 |           2 | t          | {2}
@@ -274,5 +275,5 @@
   32 |            0 | sri.christh     | sridharc98      |                 |                 |                 | FINISHED |       0.00 | 2025-10-24 23:53:38.715841+00 | 2025-10-24 23:55:26.665824+00 |            1 |           2 | t          | 
    9 |            0 | sri.christh     | sridharc98      | sridharc98      |                 |                 | FINISHED |       0.00 | 2025-10-24 22:24:25.148614+00 |                               |            0 |           3 | t          | 
    2 |            0 | sr1985!         | sri.christh     |                 |                 |                 | FINISHED |       0.00 | 2025-10-24 20:09:04.666796+00 |                               |            0 |           2 | t          | 
-(274 rows)
+(275 rows)
 
