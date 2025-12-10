@@ -6,7 +6,7 @@ on:
       sql_path:
         description: "Path to the SQL migration file"
         required: false
-        default: "migrations/db_alter_wallet.sh"
+        default: "scripts/db_alter_wallet.sh"
 
 jobs:
   migrate:
