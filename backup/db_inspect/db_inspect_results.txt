@@ -15,6 +15,8 @@ ROBOTS Army stage patch applied.
  provider_ref   | character varying        |           |          |                                                 | extended |             |              | 
  timestamp      | timestamp with time zone |           |          | now()                                           | plain    |             |              | 
  transaction_id | character varying        |           |          |                                                 | extended |             |              | 
+ channel        | character varying(32)    |           |          |                                                 | extended |             |              | 
+ initiator_ip   | character varying        |           |          |                                                 | extended |             |              | 
 Indexes:
     "wallet_transactions_pkey" PRIMARY KEY, btree (id)
     "ix_wallet_transactions_id" btree (id)
@@ -26,181 +28,184 @@ Referenced by:
 Access method: heap
 
 
- id  | user_id | amount | tx_type  | status  |               provider_ref               |           timestamp           |            transaction_id            
------+---------+--------+----------+---------+------------------------------------------+-------------------------------+--------------------------------------
-   1 |       1 |   0.00 | WITHDRAW | SUCCESS | Match #114 Loss                          | 2025-11-09 09:28:16.737023+00 | fc87f983-f63a-4b8b-bc81-12976fe269e6
-   2 |       2 |   0.00 | WITHDRAW | SUCCESS | Match #114 Loss                          | 2025-11-09 09:28:16.922073+00 | 64cac39d-8075-4ee2-8796-4acb75b26ef0
-   3 |       3 |   0.00 | WIN      | SUCCESS | Match #114 Win                           | 2025-11-09 09:28:17.087235+00 | e82766b7-6551-4a63-9538-b2cdd1764141
-   5 |       2 |   0.00 | WITHDRAW | SUCCESS | Match #115 Loss                          | 2025-11-09 09:59:54.762974+00 | 95a60d18-c14b-41b9-ad3c-81fd1b142925
-   6 |       3 |   0.00 | WITHDRAW | SUCCESS | Match #115 Loss                          | 2025-11-09 09:59:54.943831+00 | eb6c0f8a-b6bd-4ea9-8a5c-4e0cf0bb1567
-   7 |       1 |   0.00 | WIN      | SUCCESS | Match #115 Win                           | 2025-11-09 09:59:55.114321+00 | 5146c84c-6fac-488d-a22d-7a8db3400d06
-   9 |       2 |   0.00 | WITHDRAW | SUCCESS | Match #123 Loss                          | 2025-11-09 12:27:14.798534+00 | f6af163f-4e51-4ac8-928b-72db234f75db
-  10 |       1 |   0.00 | WITHDRAW | SUCCESS | Match #123 Loss                          | 2025-11-09 12:27:14.985763+00 | 4c391a67-1d33-4bca-aa5a-07b8fc1351fe
-  11 |       3 |   0.00 | WIN      | SUCCESS | Match #123 Win                           | 2025-11-09 12:27:15.164383+00 | 3ca3eefb-2369-443d-9daa-17c63b9364c3
-  13 |       3 |   0.00 | WITHDRAW | SUCCESS | Match #124 Loss                          | 2025-11-09 13:05:16.287054+00 | b3e6ac27-ee20-4e2e-83cd-6ee22fc4a150
-  14 |       2 |   0.00 | WIN      | SUCCESS | Match #124 Win                           | 2025-11-09 13:05:16.452744+00 | a37153d5-791a-4080-9714-65fc881c9efb
-  16 |       1 |   0.00 | WITHDRAW | SUCCESS | Match #125 Loss                          | 2025-11-09 13:45:57.776646+00 | adc24ecb-0e24-46fa-80b3-6b956dc529df
-  17 |       2 |   0.00 | WIN      | SUCCESS | Match #125 Win                           | 2025-11-09 13:45:57.946664+00 | 5a45266b-f310-479b-a5d0-68849d205409
-  19 |       2 |   0.00 | WITHDRAW | SUCCESS | Match #127 Loss                          | 2025-11-09 14:30:44.787068+00 | 61f1bc94-8ed2-469c-918c-f079a43433f6
-  20 |       1 |   0.00 | WITHDRAW | SUCCESS | Match #127 Loss                          | 2025-11-09 14:30:44.970871+00 | dc1a3b4d-45c3-4212-bf42-1c0e7d7d2058
-  21 |       3 |   0.00 | WIN      | SUCCESS | Match #127 Win                           | 2025-11-09 14:30:45.131939+00 | b3ac5d25-1988-4df0-a073-7b5cd445c2cc
-  23 |       1 |   0.00 | WITHDRAW | SUCCESS | Match #130 Loss                          | 2025-11-09 15:23:37.978708+00 | f0e5d3b1-bbd1-4a4a-9ea3-aaa93c28ca9f
-  24 |       2 |   0.00 | WITHDRAW | SUCCESS | Match #130 Loss                          | 2025-11-09 15:23:38.15193+00  | 5b656801-ff73-45a0-8073-cb19e7f9010a
-  25 |       3 |   0.00 | WIN      | SUCCESS | Match #130 Win                           | 2025-11-09 15:23:38.318093+00 | 1d0ab7d5-e208-4033-a5ad-4ea830c0c3a8
-  27 |       2 |   0.00 | WITHDRAW | SUCCESS | Match #140 Loss                          | 2025-11-09 21:51:27.378135+00 | 44fa1a22-09e7-4f18-864b-f24f83d4e6c8
-  28 |       3 |   0.00 | WIN      | SUCCESS | Match #140 Win                           | 2025-11-09 21:51:27.605616+00 | 1c9b7078-eeb8-4fb7-aee8-5eead95fcdcb
-  30 |       2 |   0.00 | WITHDRAW | SUCCESS | Match #145 Loss                          | 2025-11-10 10:39:14.069887+00 | d1f3ad29-f949-4d48-9a09-996fd0d6ce77
-  31 |       3 |   0.00 | WIN      | SUCCESS | Match #145 Win                           | 2025-11-10 10:39:14.235803+00 | 7cab3794-bc42-4b1b-a923-2c3d50bbe724
-  32 |       0 |   0.00 | FEE      | SUCCESS | Match #145 System Fee (Virtual Merchant) | 2025-11-10 10:39:14.422322+00 | 70c53cfc-8bf8-404f-9564-d61b6eaa3f77
-  33 |       2 |   0.00 | WITHDRAW | SUCCESS | Match #153 Loss                          | 2025-11-12 14:37:01.045843+00 | 2931d92a-fdf2-445d-9f36-ca82b1c34ad7
-  34 |       1 |   0.00 | WIN      | SUCCESS | Match #153 Win                           | 2025-11-12 14:37:01.226262+00 | ec6bbd75-915c-4cf5-b608-11c48885d5ab
-  35 |       0 |   0.00 | FEE      | SUCCESS | Match #153 System Fee (Virtual Merchant) | 2025-11-12 14:37:01.393007+00 | 8dcc81d4-7231-4175-b9a4-6c83aa00cdfe
-  36 |       1 |  -1.00 | WITHDRAW | SUCCESS | Match #156 Loss                          | 2025-11-12 15:58:54.15734+00  | cc7baf8e-a2e1-4d9c-bded-cd2cf7b5ef35
-  37 |       3 |  -1.00 | WITHDRAW | SUCCESS | Match #156 Loss                          | 2025-11-12 15:58:54.352693+00 | b3c77d9f-cbff-4940-8f19-cdb842f383a5
-  38 |       2 |   4.00 | WIN      | SUCCESS | Match #156 Win                           | 2025-11-12 15:58:54.547333+00 | 8ae1f323-4be5-469e-9159-3ec363d28f2b
-  39 |       0 |   2.00 | FEE      | SUCCESS | Match #156 System Fee (Virtual Merchant) | 2025-11-12 15:58:54.732721+00 | 51ee280b-1fcd-4b45-9e2f-57471822cb92
-  40 |       3 |  -2.00 | WITHDRAW | SUCCESS | Match 173 Loss                           | 2025-11-13 20:37:49.246742+00 | 1edae571-b208-40e3-8c89-f7edce38d01d
-  41 |       2 |  -2.00 | WITHDRAW | SUCCESS | Match 173 Loss                           | 2025-11-13 20:37:49.415871+00 | 80dca438-90c1-41e1-befc-1d3dcedf7435
-  42 |       1 |   4.00 | WIN      | SUCCESS | Match 173 Win                            | 2025-11-13 20:37:49.580863+00 | 7f9761c0-cba7-431f-a240-858da117fe2d
-  43 |       0 |   2.00 | FEE      | SUCCESS | Match 173 Fee                            | 2025-11-13 20:37:49.741967+00 | c9e7e304-6e94-4afd-be4b-cf03641127a1
-  44 |       2 |  -2.00 | WITHDRAW | SUCCESS | Match 176 Loss                           | 2025-11-13 20:55:21.004228+00 | ee5544df-a199-48e3-99b2-2898ab5f4538
-  45 |       1 |  -2.00 | WITHDRAW | SUCCESS | Match 176 Loss                           | 2025-11-13 20:55:21.229734+00 | 2da74cd9-453a-44f9-976d-dbc35c267205
-  46 |       3 |   4.00 | WIN      | SUCCESS | Match 176 Win                            | 2025-11-13 20:55:21.391602+00 | 856f1293-870f-43c9-9d53-f7ff60825d3c
-  47 |       0 |   2.00 | FEE      | SUCCESS | Match 176 Fee                            | 2025-11-13 20:55:21.556461+00 | 40176a81-4ed4-4ff0-a404-bbb95e0a468d
-  48 |       3 |  -2.00 | WITHDRAW | SUCCESS | Match 178 Loss                           | 2025-11-13 21:38:54.191863+00 | 11ed9cda-45c5-4bd5-88b7-86ba987d5bbd
-  49 |       2 |  -2.00 | WITHDRAW | SUCCESS | Match 178 Loss                           | 2025-11-13 21:38:54.443516+00 | 149cf410-2456-467e-b817-7ee4c8132663
-  50 |       1 |   4.00 | WIN      | SUCCESS | Match 178 Win                            | 2025-11-13 21:38:55.003378+00 | a42c8e54-e1ba-4114-9a9a-712df7809d4c
-  51 |       0 |   2.00 | FEE      | SUCCESS | Match 178 Fee                            | 2025-11-13 21:38:55.229106+00 | cf076cae-200d-4b7b-b29a-32bdcf11ba9b
-  52 |       1 |  -2.00 | WITHDRAW | SUCCESS | Match 179 Loss                           | 2025-11-13 21:52:22.442539+00 | 56b77395-7259-4212-be7d-c76fa4456a0e
-  53 |       3 |  -2.00 | WITHDRAW | SUCCESS | Match 179 Loss                           | 2025-11-13 21:52:22.622858+00 | b182133b-9140-481c-ad49-67cf0c686e43
-  54 |       2 |   4.00 | WIN      | SUCCESS | Match 179 Win                            | 2025-11-13 21:52:22.82303+00  | 32506c2d-19d8-4a8e-9e9e-c1fdd1bbf24d
-  55 |       0 |   2.00 | FEE      | SUCCESS | Match 179 Fee                            | 2025-11-13 21:52:22.990037+00 | a49e9f26-cabd-45e0-ad9e-b570e8d16219
-  56 |       3 |  -2.00 | WITHDRAW | SUCCESS | Match 180 Loss                           | 2025-11-13 22:15:27.543494+00 | b2a7fb61-7091-458e-976a-e20ecdc2058d
-  57 |       1 |  -2.00 | WITHDRAW | SUCCESS | Match 180 Loss                           | 2025-11-13 22:15:27.782587+00 | ef9c504c-57f7-4985-9f4d-869f2a1c0d3f
-  58 |       2 |   4.00 | WIN      | SUCCESS | Match 180 Win                            | 2025-11-13 22:15:27.946041+00 | 9de78a06-48c5-41fc-8a5b-a30c1f236dd5
-  59 |       0 |   2.00 | FEE      | SUCCESS | Match 180 Fee                            | 2025-11-13 22:15:28.104631+00 | 635f1018-9c60-40ef-8627-edeac30a5e05
-  60 |       2 |  -2.00 | WITHDRAW | SUCCESS | Match 185 Loss                           | 2025-11-14 13:27:49.477694+00 | 2cc0489f-dc5a-4d9b-86c4-36f784ba634b
-  61 |       1 |  -2.00 | WITHDRAW | SUCCESS | Match 185 Loss                           | 2025-11-14 13:27:49.672735+00 | 2cb906d7-9c2e-46d0-b449-93c122645e6a
-  62 |       3 |   4.00 | WIN      | SUCCESS | Match 185 Win                            | 2025-11-14 13:27:49.912645+00 | 8daa0ef7-363f-4bce-bd75-c1fcf31dfd59
-  63 |       0 |   2.00 | FEE      | SUCCESS | Match 185 Fee                            | 2025-11-14 13:27:50.148054+00 | 4d434732-063a-494e-8035-07efc67aed0f
-  64 |       1 |  -2.00 | WITHDRAW | SUCCESS | Match 186 Loss                           | 2025-11-14 13:43:51.390876+00 | 598a7119-0698-4013-bf0b-f8a35a541dd3
-  65 |       2 |  -2.00 | WITHDRAW | SUCCESS | Match 186 Loss                           | 2025-11-14 13:43:51.577104+00 | 261f83b1-109b-46ce-b6fe-9be90028bc7c
-  66 |       3 |   4.00 | WIN      | SUCCESS | Match 186 Win                            | 2025-11-14 13:43:51.756971+00 | 36878bdd-ba22-4c65-8adb-ce964f06ceb4
-  67 |       0 |   2.00 | FEE      | SUCCESS | Match 186 Fee                            | 2025-11-14 13:43:51.932469+00 | 2bd4e0a4-1a4c-4bd6-90b6-2f14504dd44c
-  68 |       2 |  -2.00 | WITHDRAW | SUCCESS | Match 189 Loss                           | 2025-11-14 14:05:43.97274+00  | 1bc06590-7123-4896-bd00-47bfe7ea1d67
-  69 |       3 |  -2.00 | WITHDRAW | SUCCESS | Match 189 Loss                           | 2025-11-14 14:05:44.15144+00  | 23754586-9647-4f8e-b2f8-b2bd73f6c29b
-  70 |       1 |   4.00 | WIN      | SUCCESS | Match 189 Win                            | 2025-11-14 14:05:44.333829+00 | 34c9db7b-b2ed-4426-aa82-5abb0e76469a
-  71 |       0 |   2.00 | FEE      | SUCCESS | Match 189 Fee                            | 2025-11-14 14:05:44.506116+00 | 23272834-8b1b-4c8a-bc49-05d19e3be21b
-  72 |       3 |  -2.00 | WITHDRAW | SUCCESS | Match 190 Loss                           | 2025-11-14 14:53:41.49577+00  | c4d1d04f-698e-4fe3-8f8e-e6deb137d8b2
-  73 |       2 |  -2.00 | WITHDRAW | SUCCESS | Match 190 Loss                           | 2025-11-14 14:53:41.731433+00 | d905a817-17a1-4d24-9ad7-779033d235ec
-  74 |       1 |   4.00 | WIN      | SUCCESS | Match 190 Win                            | 2025-11-14 14:53:41.932609+00 | 6a80383e-415c-4fc7-a413-468f12c8a99a
-  75 |       0 |   2.00 | FEE      | SUCCESS | Match 190 Fee                            | 2025-11-14 14:53:42.138321+00 | ffec3b2b-bcae-45ba-a758-af02d6b87453
-  76 |       2 |  -2.00 | WITHDRAW | SUCCESS | Match 191 Loss                           | 2025-11-14 16:42:47.658851+00 | 3abfdaca-3dec-4e4d-8a7f-972862da58bf
-  77 |       3 |  -2.00 | WITHDRAW | SUCCESS | Match 191 Loss                           | 2025-11-14 16:42:47.849866+00 | 374918fd-947c-4bbe-8a65-a7ef7defb646
-  78 |       1 |   4.00 | WIN      | SUCCESS | Match 191 Win                            | 2025-11-14 16:42:48.029876+00 | 987aecd1-2675-4751-bb4d-76395cfae507
-  79 |       0 |   2.00 | FEE      | SUCCESS | Match 191 Fee                            | 2025-11-14 16:42:48.20162+00  | dd7a6f0b-af15-4af1-998d-308328e4f2c1
-  80 |       3 |  -2.00 | WITHDRAW | SUCCESS | Match 192 Loss                           | 2025-11-14 17:11:10.974512+00 | 62fd8f7c-093c-4026-8e80-0c4b57d4d91d
-  81 |       2 |  -2.00 | WITHDRAW | SUCCESS | Match 192 Loss                           | 2025-11-14 17:11:11.169407+00 | 07ad5fb5-3cbc-499b-9f86-32ce3746ce78
-  82 |       1 |   4.00 | WIN      | SUCCESS | Match 192 Win                            | 2025-11-14 17:11:11.733104+00 | 77abdc79-fe27-4343-9fa6-8c1fc692a556
-  83 |       0 |   2.00 | FEE      | SUCCESS | Match 192 Fee                            | 2025-11-14 17:11:12.310886+00 | 9b7f7e72-8557-43f3-8a28-d2d1893e7045
-  84 |       1 |   3.00 | WIN      | SUCCESS | Match 202 Win (stake=2, players=2)       | 2025-11-14 21:20:37.422335+00 | 0501215c-623f-45ec-afc7-26dec8e456fe
-  85 |       0 |   1.00 | FEE      | SUCCESS | Match 202 Fee                            | 2025-11-14 21:20:37.589226+00 | de7effe5-c571-4715-ac4d-0f297aa75e74
-  86 |       3 |   4.00 | WIN      | SUCCESS | Match 203 Win (stake=2, players=3)       | 2025-11-14 21:24:37.36687+00  | 9d8bff24-b57a-42a7-ad00-9739a3d94a57
-  87 |       0 |   2.00 | FEE      | SUCCESS | Match 203 Fee                            | 2025-11-14 21:24:37.529178+00 | 67171cbc-c750-4b0d-8548-4006641d0bdb
-  88 |       3 |   4.00 | WIN      | SUCCESS | Match 204 win payout                     | 2025-11-14 23:47:17.388116+00 | 24fffe1b-d0ea-4840-b420-21c447131984
-  89 |       1 |   2.00 | FEE      | SUCCESS | Match 204 system fee                     | 2025-11-14 23:47:17.577083+00 | 9914ee53-fe70-44a8-8f90-6ae3368dc3b7
-  90 |       3 |   4.00 | WIN      | SUCCESS | Match 206 win                            | 2025-11-15 00:16:29.90774+00  | 40bcc5e4-7c0e-47bf-98da-9f36459c2bad
-  91 |       1 |   2.00 | FEE      | SUCCESS | Match 206 fee                            | 2025-11-15 00:16:30.072748+00 | 5e21c3a9-ec67-48de-b847-58a5f75f7bcb
-  92 |       2 |   4.00 | WIN      | SUCCESS | Match 208 win                            | 2025-11-15 00:20:21.993865+00 | 376f05ca-b429-4392-8ded-a4ab0e685f39
-  93 |       1 |   2.00 | FEE      | SUCCESS | Match 208 fee                            | 2025-11-15 00:20:22.223617+00 | c5a52f1d-d96f-409d-8535-bc227e886c7c
-  94 |       1 |   4.00 | WIN      | SUCCESS | Match 210 win                            | 2025-11-16 15:23:34.568754+00 | 0df053b8-1092-4f6a-b077-0a113c454da6
-  95 |       3 |   4.00 | WIN      | SUCCESS | Match 212 win                            | 2025-11-16 15:53:53.384283+00 | 07d7b1b1-4fe8-455c-8cf8-2735beb03936
-  96 |       1 |   4.00 | WIN      | SUCCESS | Match 213 win                            | 2025-11-16 16:11:07.181839+00 | d6fe9a46-fd47-47e0-9d9d-e9250aaf9bb6
-  97 |       1 |   4.00 | WIN      | SUCCESS | Match 214 win                            | 2025-11-16 16:40:21.385564+00 | 3b0f0758-2d4b-4aaa-8861-c65099de384f
-  98 |       1 |   4.00 | WIN      | SUCCESS | Match 216 win                            | 2025-11-16 16:52:05.733144+00 | b8132ef9-3cc9-4fb0-9ced-113c6d4bd20e
-  99 |   10015 |   2.00 | WIN      | SUCCESS | Match 222 win                            | 2025-11-17 16:28:07.374866+00 | ca7d685e-5281-4d28-850b-d65e8b4e18c5
- 100 |   10006 |   0.00 | WIN      | SUCCESS | Match 223 win                            | 2025-11-17 16:28:43.41872+00  | 33945391-23c0-4248-8577-6f378869f875
- 101 |       1 |   2.00 | WIN      | SUCCESS | Match 230 win                            | 2025-11-18 13:30:05.623143+00 | 9a446599-86ad-4496-b96f-9704986ae9a1
- 102 |   10005 |   2.00 | WIN      | SUCCESS | Match 231 win                            | 2025-11-18 13:31:32.756389+00 | 43e63cb1-8d28-44a9-9ba3-fe6f2bc05f36
- 103 |   10019 |   0.00 | WIN      | SUCCESS | Match 233 win                            | 2025-11-18 13:32:43.169675+00 | 849911ba-1a58-4428-b538-447038ab1b7c
- 104 |   10014 |   2.00 | WIN      | SUCCESS | Match 243 win                            | 2025-11-19 17:25:35.531942+00 | fed8e785-d00b-4549-a6b3-e60641da1169
- 105 |   10020 |   0.00 | WIN      | SUCCESS | Match 249 win                            | 2025-11-26 14:57:21.400278+00 | 95666474-2c26-45eb-a0cf-54d5a2132207
- 106 |   10018 |   0.00 | WIN      | SUCCESS | Match 250 win                            | 2025-11-26 14:58:54.960785+00 | 77408676-5904-4983-aee1-be6c42db7345
- 107 |   10009 |   0.00 | WIN      | SUCCESS | Match 252 win                            | 2025-11-26 15:10:10.393304+00 | 64fee1e6-6384-4f7b-80fa-f7767250d005
- 108 |       2 |   0.00 | WIN      | SUCCESS | Match 253 win                            | 2025-11-26 15:10:36.315605+00 | f981c144-96a8-485d-a97e-0df428b24832
- 109 |       2 |   0.00 | WIN      | SUCCESS | Match 254 win                            | 2025-11-26 15:17:13.348277+00 | c37bd52f-4251-43b7-ac6c-5d6b1233f293
- 110 |   10009 |   0.00 | WIN      | SUCCESS | Match 255 win                            | 2025-11-26 15:17:56.943322+00 | e9589689-cc13-4b50-ad2c-ad4705fbd83e
- 111 |       2 |   2.00 | WIN      | SUCCESS | Match 256 win                            | 2025-11-26 15:23:15.381506+00 | 715668e8-d376-42b1-b075-f7134686b431
- 112 |   10006 |   0.00 | WIN      | SUCCESS | Match 259 win                            | 2025-11-26 15:35:35.852235+00 | acf688ea-ccae-4192-9751-ad61b06c3b3e
- 113 |       1 |   3.00 | WIN      | SUCCESS | Match 260 win                            | 2025-11-27 13:53:14.320939+00 | 14bb25f8-66fe-4a52-b2b8-1ebca302faf4
- 114 |       2 |   3.00 | WIN      | SUCCESS | Match 261 win                            | 2025-11-27 14:21:33.541242+00 | 5d8c7707-02ff-4322-8c6b-10af9147a67f
- 115 |       1 |   1.00 | FEE      | SUCCESS | Match 261 fee                            | 2025-11-27 14:21:33.716912+00 | cb6814c9-77db-4c61-8325-967bddb139ba
- 116 |       1 |   3.00 | WIN      | SUCCESS | Match 262 win                            | 2025-11-27 14:50:32.24723+00  | 31466c9a-afca-456a-9377-9204b6ff34bc
- 117 |       1 |   2.00 | WIN      | SUCCESS | Match 263 win                            | 2025-11-27 15:25:37.795612+00 | 951bbd0b-9797-451e-baf7-e1a5b737c8f1
- 118 |       1 |   2.00 | WIN      | SUCCESS | Match 264 win                            | 2025-11-27 15:45:00.965336+00 | a83b66fb-b1a1-4d17-8170-3d3755b6c2d3
- 119 |       1 |   3.00 | WIN      | SUCCESS | Match 265 win                            | 2025-11-27 17:38:27.159401+00 | 7d14487c-e4fe-4293-93f8-c94cfaedd70f
- 120 |   10005 |   0.00 | WIN      | SUCCESS | Match 266 win                            | 2025-11-27 17:46:50.04155+00  | c60ea73c-bcf2-4547-ad47-a86573b64f02
- 121 |       2 |   6.00 | WIN      | SUCCESS | Match 267 win                            | 2025-11-27 18:02:22.762877+00 | 6f7cdeb5-5029-4740-801f-a41022784e98
- 122 |       1 |   4.00 | WIN      | SUCCESS | Match 268 win                            | 2025-11-27 18:04:35.61426+00  | 9e05fa1e-6bae-4d03-b324-27b7dde80271
- 123 |       2 |   6.00 | WIN      | SUCCESS | Match 269 win                            | 2025-11-27 18:13:54.554625+00 | 1b1b298b-815d-4de7-8c2e-a93fa2c7d9d5
- 124 |       1 |   6.00 | WIN      | SUCCESS | Match 270 win                            | 2025-11-27 18:16:48.870649+00 | c80c2540-54dd-4eeb-87b6-47d5658afc1a
- 125 |       1 |   3.00 | WIN      | SUCCESS | Match 271 win                            | 2025-11-27 19:09:25.544134+00 | 863eb57b-a204-4231-8be2-b5162f061547
- 126 |       1 |   6.00 | WIN      | SUCCESS | Match 272 win                            | 2025-11-27 19:10:56.004467+00 | a59f1f67-dc49-4601-9746-7310158db740
- 127 |       1 |   3.00 | WIN      | SUCCESS | Match 273 win                            | 2025-11-27 20:48:34.940061+00 | abf54abd-b104-45cb-8e2d-ae8344f2ff37
- 128 |   10019 |   0.00 | WIN      | SUCCESS | Match 274 win                            | 2025-11-27 20:49:51.508453+00 | 126b2c22-8d66-4b5a-b84d-ba79c5b08dbe
- 129 |       2 |   3.00 | WIN      | SUCCESS | Match 275 win                            | 2025-11-28 12:52:18.650218+00 | 8674334c-3bb6-4473-ab2c-312477eb5706
- 130 |       1 |   3.00 | WIN      | SUCCESS | Match 276 win                            | 2025-11-28 12:52:50.450909+00 | 256dc527-acf9-4f7f-bf82-e17e7472f9f6
- 131 |       2 |   3.00 | WIN      | SUCCESS | Match 277 win                            | 2025-11-28 13:00:07.04255+00  | ddddc42e-3dd3-4350-9628-06d1f800ff7b
- 132 |       2 |   3.00 | WIN      | SUCCESS | Match 278 win                            | 2025-11-28 15:55:16.864091+00 | fe68d9d3-e11d-462b-afea-1fe23f6961a8
- 133 |       2 |   3.00 | WIN      | SUCCESS | Match 279 win                            | 2025-11-28 15:58:22.151016+00 | 4c503078-5852-4a36-a053-c57144078613
- 134 |       2 |   3.00 | WIN      | SUCCESS | Match 280 win                            | 2025-11-28 15:59:54.771614+00 | 6ac2f04e-468d-41bf-ab9c-cb57b99c3840
- 135 |       2 |   3.00 | WIN      | SUCCESS | Match 281 win                            | 2025-11-28 16:03:36.019593+00 | 0b60f0d0-f830-41c1-ae9b-26ce50127e95
- 136 |       1 |   3.00 | WIN      | SUCCESS | Match 282 win                            | 2025-11-28 16:11:44.565411+00 | fda6ef51-ed1a-443d-b957-c8fea74b7bfd
- 137 |       2 |   0.00 | WIN      | SUCCESS | Match 283 win                            | 2025-11-28 16:12:23.595746+00 | 47f73e8a-1759-43d6-ab13-5891f6c9571a
- 138 |       1 |   0.00 | WIN      | SUCCESS | Match 284 win                            | 2025-11-28 16:13:03.346329+00 | e3055a67-cac4-4f32-91ac-813eebf37553
- 139 |       1 |   0.00 | WIN      | SUCCESS | Match 285 win                            | 2025-11-28 16:13:36.774897+00 | bdcc7c41-1dbb-4e23-ba54-a22841edf91b
- 140 |       1 |   3.00 | WIN      | SUCCESS | Match 288 win                            | 2025-11-28 16:49:23.751553+00 | df5b366f-d124-449f-a456-4ef4972b2d50
- 141 |       2 |   0.00 | WIN      | SUCCESS | Match 289 win                            | 2025-11-28 16:49:51.26332+00  | dd97166a-fadd-4c3c-92bb-a3b4cae2254e
- 142 |   10019 |   0.00 | WIN      | SUCCESS | Match 290 win                            | 2025-11-28 16:50:33.678533+00 | 8fde896b-2c94-47c2-b9c0-073bab4cb9bc
- 143 |       2 |   0.00 | WIN      | SUCCESS | Match 291 win                            | 2025-11-28 16:55:46.242428+00 | 145da5ac-f6f7-4c24-ab73-8fee0d50f9f3
- 144 |       2 |   3.00 | WIN      | SUCCESS | Match 292 win                            | 2025-11-28 16:58:18.157677+00 | a8587d8f-4fff-4022-87b4-6f4c8f83c742
- 145 |       2 |   3.00 | WIN      | SUCCESS | Match 293 win                            | 2025-11-28 17:00:15.813467+00 | 62d8d8d0-3221-46cf-890e-83934d9529cf
- 146 |       2 |   3.00 | WIN      | SUCCESS | Match 294 win                            | 2025-11-28 17:03:42.365427+00 | e8a1ba85-866c-4cdb-a6e7-bd0b828045d1
- 147 |       2 |   0.00 | WIN      | SUCCESS | Match 295 win                            | 2025-11-28 17:09:05.374334+00 | 25ea724f-f751-40ec-be78-ed837ebfa12f
- 148 |       2 |   0.00 | WIN      | SUCCESS | Match 296 win                            | 2025-11-28 17:10:24.182346+00 | 82a67311-a17d-4161-92be-6ea1a999b857
- 149 |       2 |   0.00 | WIN      | SUCCESS | Match 297 win                            | 2025-11-28 17:36:45.853927+00 | 0e1fcd6e-87d9-495b-9997-79e0ba4e007e
- 150 |       2 |   3.00 | WIN      | SUCCESS | Match 298 win                            | 2025-11-28 18:07:13.156554+00 | 9002814f-f3a4-4f5b-ab78-88fb039e24c1
- 151 |       2 |   0.00 | WIN      | SUCCESS | Match 299 win                            | 2025-11-28 18:08:36.579679+00 | 15953a95-7b16-4870-902d-93f6680ef392
- 152 |       2 |   3.00 | WIN      | SUCCESS | Match 300 win                            | 2025-11-28 18:26:57.192914+00 | 9c2c0c8a-c17b-4c39-ba6a-9ef129233939
- 153 |       1 |   3.00 | WIN      | SUCCESS | Match 301 win                            | 2025-11-28 18:31:44.143285+00 | 7bc2d8ea-77ac-43db-b4cb-9fd40049e76b
- 154 |       1 |   0.00 | WIN      | SUCCESS | Match 303 win                            | 2025-11-28 19:43:23.327433+00 | 1225adb4-8691-43f2-b7cb-c06571198122
- 155 |       1 |   0.00 | WIN      | SUCCESS | Match 304 win                            | 2025-11-28 19:47:30.471287+00 | d6555296-d596-49dd-8cc7-291d6c39e3ef
- 156 |       1 |   0.00 | WIN      | SUCCESS | Match 305 win                            | 2025-11-28 19:47:55.657333+00 | 24bebefc-5549-4634-9cce-011da4d064b3
- 157 |       1 |   0.00 | WIN      | SUCCESS | Match 306 win                            | 2025-11-28 19:49:07.463037+00 | 153da6b0-2a09-4a77-ac43-992f7f9bd7e5
- 158 |       1 |   0.00 | WIN      | SUCCESS | Match 307 win                            | 2025-11-28 19:49:36.712078+00 | b2a0e5d9-9c78-4772-b99a-8f350dcb4651
- 159 |       1 |   0.00 | WIN      | SUCCESS | Match 308 win                            | 2025-11-28 20:14:37.055216+00 | bdf2c92a-9ece-4267-9c0c-f4322ecff564
- 160 |       2 |   0.00 | WIN      | SUCCESS | Match 309 win                            | 2025-11-28 20:19:54.453484+00 | 34504f4c-f9b0-4120-8a29-f1fdc8e9d193
- 161 |       1 |   3.00 | WIN      | SUCCESS | Match 310 win                            | 2025-11-28 20:27:59.994439+00 | c0f9a3dc-cf7a-4b4e-92b9-671c2722e518
- 162 |       1 |   0.00 | WIN      | SUCCESS | Match 311 win                            | 2025-11-28 20:45:56.220591+00 | 56019ca2-b249-4400-9273-732b509a8806
- 163 |       2 |   0.00 | WIN      | SUCCESS | Match 312 win                            | 2025-11-28 20:51:30.343595+00 | e529eb5e-459b-4145-81dc-333b715f81e6
- 164 |       1 |   0.00 | WIN      | SUCCESS | Match 313 win                            | 2025-11-28 20:54:32.24043+00  | a8a5aaf3-8bab-4c0c-9395-810757d1b991
- 165 |       1 |   0.00 | WIN      | SUCCESS | Match 314 win                            | 2025-11-28 21:39:20.740634+00 | 4d757328-86af-424d-8456-7038981d52c3
- 166 |       2 |   3.00 | WIN      | SUCCESS | Match 315 win                            | 2025-11-28 21:40:05.963701+00 | d4eac5a6-f7c3-47a2-b043-b50c1533ccff
- 167 |       2 |   0.00 | WIN      | SUCCESS | Match 316 win                            | 2025-11-28 21:41:08.843039+00 | c7915be7-6704-4c09-9443-9e994c55d2c1
- 168 |       2 |   0.00 | WIN      | SUCCESS | Match 317 win                            | 2025-11-28 21:42:44.575751+00 | 30958d91-ac7a-45b6-9e9a-733e6dc6e833
- 169 |       2 |   0.00 | WIN      | SUCCESS | Match 320 win                            | 2025-11-28 23:06:41.721134+00 | 0a356c61-cdf7-42e9-bb29-12eb1d3e019e
- 170 |       2 |   3.00 | WIN      | SUCCESS | Match 324 win                            | 2025-11-29 16:34:12.640367+00 | b051cfaa-7c3d-4f5f-9169-51633c87b284
- 171 |   10008 |   0.00 | WIN      | SUCCESS | Match 325 win                            | 2025-11-30 08:21:03.242942+00 | 3ffa32d4-62cd-4450-a17e-ef6b1e410d45
- 172 |   10004 |   4.00 | WIN      | SUCCESS | Match 219 win                            | 2025-11-30 09:15:45.428607+00 | dcc20d81-866a-40a7-82e5-ccc303a781af
- 173 |   10003 |   4.00 | WIN      | SUCCESS | Match 217 win                            | 2025-11-30 09:16:05.61323+00  | e913c8d1-c33e-4757-90d3-eaa0ce37a00e
- 174 |   10018 |   0.00 | WIN      | SUCCESS | Match 326 win                            | 2025-11-30 11:06:46.946673+00 | c78896f7-991b-427c-976c-eedffc7b9138
- 175 |   10007 |   0.00 | WIN      | SUCCESS | Match 327 win                            | 2025-11-30 12:33:04.446634+00 | dcfe27b1-8443-4bc1-ba24-7ad89be78961
- 176 |       2 |   0.00 | WIN      | SUCCESS | Match 328 win                            | 2025-11-30 12:36:29.185878+00 | d8242b8a-6f9a-400a-abcf-2ed3672570ff
- 177 |       1 |   0.00 | WIN      | SUCCESS | Match 329 win                            | 2025-11-30 12:50:02.168823+00 | 5afb4595-e1bc-4642-a631-d81e119aaea6
- 178 |       2 |   0.00 | WIN      | SUCCESS | Match 330 win                            | 2025-11-30 12:53:02.843775+00 | dadbbd1e-7504-4eee-afea-1bc0dbb0949b
- 179 |   10015 |   0.00 | WIN      | SUCCESS | Match 331 win                            | 2025-11-30 13:02:03.506612+00 | a466f348-3974-4779-a773-4cd2bca15f1c
- 180 |   10010 |   0.00 | WIN      | SUCCESS | Match 332 win                            | 2025-11-30 13:02:38.076881+00 | 6f96ac03-5341-43a6-b1e6-964ef85ffee2
-(172 rows)
+ id  | user_id | amount | tx_type  | status  |               provider_ref               |           timestamp           |            transaction_id            | channel | initiator_ip 
+-----+---------+--------+----------+---------+------------------------------------------+-------------------------------+--------------------------------------+---------+--------------
+   1 |       1 |   0.00 | WITHDRAW | SUCCESS | Match #114 Loss                          | 2025-11-09 09:28:16.737023+00 | fc87f983-f63a-4b8b-bc81-12976fe269e6 |         | 
+   2 |       2 |   0.00 | WITHDRAW | SUCCESS | Match #114 Loss                          | 2025-11-09 09:28:16.922073+00 | 64cac39d-8075-4ee2-8796-4acb75b26ef0 |         | 
+   3 |       3 |   0.00 | WIN      | SUCCESS | Match #114 Win                           | 2025-11-09 09:28:17.087235+00 | e82766b7-6551-4a63-9538-b2cdd1764141 |         | 
+   5 |       2 |   0.00 | WITHDRAW | SUCCESS | Match #115 Loss                          | 2025-11-09 09:59:54.762974+00 | 95a60d18-c14b-41b9-ad3c-81fd1b142925 |         | 
+   6 |       3 |   0.00 | WITHDRAW | SUCCESS | Match #115 Loss                          | 2025-11-09 09:59:54.943831+00 | eb6c0f8a-b6bd-4ea9-8a5c-4e0cf0bb1567 |         | 
+   7 |       1 |   0.00 | WIN      | SUCCESS | Match #115 Win                           | 2025-11-09 09:59:55.114321+00 | 5146c84c-6fac-488d-a22d-7a8db3400d06 |         | 
+   9 |       2 |   0.00 | WITHDRAW | SUCCESS | Match #123 Loss                          | 2025-11-09 12:27:14.798534+00 | f6af163f-4e51-4ac8-928b-72db234f75db |         | 
+  10 |       1 |   0.00 | WITHDRAW | SUCCESS | Match #123 Loss                          | 2025-11-09 12:27:14.985763+00 | 4c391a67-1d33-4bca-aa5a-07b8fc1351fe |         | 
+  11 |       3 |   0.00 | WIN      | SUCCESS | Match #123 Win                           | 2025-11-09 12:27:15.164383+00 | 3ca3eefb-2369-443d-9daa-17c63b9364c3 |         | 
+  13 |       3 |   0.00 | WITHDRAW | SUCCESS | Match #124 Loss                          | 2025-11-09 13:05:16.287054+00 | b3e6ac27-ee20-4e2e-83cd-6ee22fc4a150 |         | 
+  14 |       2 |   0.00 | WIN      | SUCCESS | Match #124 Win                           | 2025-11-09 13:05:16.452744+00 | a37153d5-791a-4080-9714-65fc881c9efb |         | 
+  16 |       1 |   0.00 | WITHDRAW | SUCCESS | Match #125 Loss                          | 2025-11-09 13:45:57.776646+00 | adc24ecb-0e24-46fa-80b3-6b956dc529df |         | 
+  17 |       2 |   0.00 | WIN      | SUCCESS | Match #125 Win                           | 2025-11-09 13:45:57.946664+00 | 5a45266b-f310-479b-a5d0-68849d205409 |         | 
+  19 |       2 |   0.00 | WITHDRAW | SUCCESS | Match #127 Loss                          | 2025-11-09 14:30:44.787068+00 | 61f1bc94-8ed2-469c-918c-f079a43433f6 |         | 
+  20 |       1 |   0.00 | WITHDRAW | SUCCESS | Match #127 Loss                          | 2025-11-09 14:30:44.970871+00 | dc1a3b4d-45c3-4212-bf42-1c0e7d7d2058 |         | 
+  21 |       3 |   0.00 | WIN      | SUCCESS | Match #127 Win                           | 2025-11-09 14:30:45.131939+00 | b3ac5d25-1988-4df0-a073-7b5cd445c2cc |         | 
+  23 |       1 |   0.00 | WITHDRAW | SUCCESS | Match #130 Loss                          | 2025-11-09 15:23:37.978708+00 | f0e5d3b1-bbd1-4a4a-9ea3-aaa93c28ca9f |         | 
+  24 |       2 |   0.00 | WITHDRAW | SUCCESS | Match #130 Loss                          | 2025-11-09 15:23:38.15193+00  | 5b656801-ff73-45a0-8073-cb19e7f9010a |         | 
+  25 |       3 |   0.00 | WIN      | SUCCESS | Match #130 Win                           | 2025-11-09 15:23:38.318093+00 | 1d0ab7d5-e208-4033-a5ad-4ea830c0c3a8 |         | 
+  27 |       2 |   0.00 | WITHDRAW | SUCCESS | Match #140 Loss                          | 2025-11-09 21:51:27.378135+00 | 44fa1a22-09e7-4f18-864b-f24f83d4e6c8 |         | 
+  28 |       3 |   0.00 | WIN      | SUCCESS | Match #140 Win                           | 2025-11-09 21:51:27.605616+00 | 1c9b7078-eeb8-4fb7-aee8-5eead95fcdcb |         | 
+  30 |       2 |   0.00 | WITHDRAW | SUCCESS | Match #145 Loss                          | 2025-11-10 10:39:14.069887+00 | d1f3ad29-f949-4d48-9a09-996fd0d6ce77 |         | 
+  31 |       3 |   0.00 | WIN      | SUCCESS | Match #145 Win                           | 2025-11-10 10:39:14.235803+00 | 7cab3794-bc42-4b1b-a923-2c3d50bbe724 |         | 
+  32 |       0 |   0.00 | FEE      | SUCCESS | Match #145 System Fee (Virtual Merchant) | 2025-11-10 10:39:14.422322+00 | 70c53cfc-8bf8-404f-9564-d61b6eaa3f77 |         | 
+  33 |       2 |   0.00 | WITHDRAW | SUCCESS | Match #153 Loss                          | 2025-11-12 14:37:01.045843+00 | 2931d92a-fdf2-445d-9f36-ca82b1c34ad7 |         | 
+  34 |       1 |   0.00 | WIN      | SUCCESS | Match #153 Win                           | 2025-11-12 14:37:01.226262+00 | ec6bbd75-915c-4cf5-b608-11c48885d5ab |         | 
+  35 |       0 |   0.00 | FEE      | SUCCESS | Match #153 System Fee (Virtual Merchant) | 2025-11-12 14:37:01.393007+00 | 8dcc81d4-7231-4175-b9a4-6c83aa00cdfe |         | 
+  36 |       1 |  -1.00 | WITHDRAW | SUCCESS | Match #156 Loss                          | 2025-11-12 15:58:54.15734+00  | cc7baf8e-a2e1-4d9c-bded-cd2cf7b5ef35 |         | 
+  37 |       3 |  -1.00 | WITHDRAW | SUCCESS | Match #156 Loss                          | 2025-11-12 15:58:54.352693+00 | b3c77d9f-cbff-4940-8f19-cdb842f383a5 |         | 
+  38 |       2 |   4.00 | WIN      | SUCCESS | Match #156 Win                           | 2025-11-12 15:58:54.547333+00 | 8ae1f323-4be5-469e-9159-3ec363d28f2b |         | 
+  39 |       0 |   2.00 | FEE      | SUCCESS | Match #156 System Fee (Virtual Merchant) | 2025-11-12 15:58:54.732721+00 | 51ee280b-1fcd-4b45-9e2f-57471822cb92 |         | 
+  40 |       3 |  -2.00 | WITHDRAW | SUCCESS | Match 173 Loss                           | 2025-11-13 20:37:49.246742+00 | 1edae571-b208-40e3-8c89-f7edce38d01d |         | 
+  41 |       2 |  -2.00 | WITHDRAW | SUCCESS | Match 173 Loss                           | 2025-11-13 20:37:49.415871+00 | 80dca438-90c1-41e1-befc-1d3dcedf7435 |         | 
+  42 |       1 |   4.00 | WIN      | SUCCESS | Match 173 Win                            | 2025-11-13 20:37:49.580863+00 | 7f9761c0-cba7-431f-a240-858da117fe2d |         | 
+  43 |       0 |   2.00 | FEE      | SUCCESS | Match 173 Fee                            | 2025-11-13 20:37:49.741967+00 | c9e7e304-6e94-4afd-be4b-cf03641127a1 |         | 
+  44 |       2 |  -2.00 | WITHDRAW | SUCCESS | Match 176 Loss                           | 2025-11-13 20:55:21.004228+00 | ee5544df-a199-48e3-99b2-2898ab5f4538 |         | 
+  45 |       1 |  -2.00 | WITHDRAW | SUCCESS | Match 176 Loss                           | 2025-11-13 20:55:21.229734+00 | 2da74cd9-453a-44f9-976d-dbc35c267205 |         | 
+  46 |       3 |   4.00 | WIN      | SUCCESS | Match 176 Win                            | 2025-11-13 20:55:21.391602+00 | 856f1293-870f-43c9-9d53-f7ff60825d3c |         | 
+  47 |       0 |   2.00 | FEE      | SUCCESS | Match 176 Fee                            | 2025-11-13 20:55:21.556461+00 | 40176a81-4ed4-4ff0-a404-bbb95e0a468d |         | 
+  48 |       3 |  -2.00 | WITHDRAW | SUCCESS | Match 178 Loss                           | 2025-11-13 21:38:54.191863+00 | 11ed9cda-45c5-4bd5-88b7-86ba987d5bbd |         | 
+  49 |       2 |  -2.00 | WITHDRAW | SUCCESS | Match 178 Loss                           | 2025-11-13 21:38:54.443516+00 | 149cf410-2456-467e-b817-7ee4c8132663 |         | 
+  50 |       1 |   4.00 | WIN      | SUCCESS | Match 178 Win                            | 2025-11-13 21:38:55.003378+00 | a42c8e54-e1ba-4114-9a9a-712df7809d4c |         | 
+  51 |       0 |   2.00 | FEE      | SUCCESS | Match 178 Fee                            | 2025-11-13 21:38:55.229106+00 | cf076cae-200d-4b7b-b29a-32bdcf11ba9b |         | 
+  52 |       1 |  -2.00 | WITHDRAW | SUCCESS | Match 179 Loss                           | 2025-11-13 21:52:22.442539+00 | 56b77395-7259-4212-be7d-c76fa4456a0e |         | 
+  53 |       3 |  -2.00 | WITHDRAW | SUCCESS | Match 179 Loss                           | 2025-11-13 21:52:22.622858+00 | b182133b-9140-481c-ad49-67cf0c686e43 |         | 
+  54 |       2 |   4.00 | WIN      | SUCCESS | Match 179 Win                            | 2025-11-13 21:52:22.82303+00  | 32506c2d-19d8-4a8e-9e9e-c1fdd1bbf24d |         | 
+  55 |       0 |   2.00 | FEE      | SUCCESS | Match 179 Fee                            | 2025-11-13 21:52:22.990037+00 | a49e9f26-cabd-45e0-ad9e-b570e8d16219 |         | 
+  56 |       3 |  -2.00 | WITHDRAW | SUCCESS | Match 180 Loss                           | 2025-11-13 22:15:27.543494+00 | b2a7fb61-7091-458e-976a-e20ecdc2058d |         | 
+  57 |       1 |  -2.00 | WITHDRAW | SUCCESS | Match 180 Loss                           | 2025-11-13 22:15:27.782587+00 | ef9c504c-57f7-4985-9f4d-869f2a1c0d3f |         | 
+  58 |       2 |   4.00 | WIN      | SUCCESS | Match 180 Win                            | 2025-11-13 22:15:27.946041+00 | 9de78a06-48c5-41fc-8a5b-a30c1f236dd5 |         | 
+  59 |       0 |   2.00 | FEE      | SUCCESS | Match 180 Fee                            | 2025-11-13 22:15:28.104631+00 | 635f1018-9c60-40ef-8627-edeac30a5e05 |         | 
+  60 |       2 |  -2.00 | WITHDRAW | SUCCESS | Match 185 Loss                           | 2025-11-14 13:27:49.477694+00 | 2cc0489f-dc5a-4d9b-86c4-36f784ba634b |         | 
+  61 |       1 |  -2.00 | WITHDRAW | SUCCESS | Match 185 Loss                           | 2025-11-14 13:27:49.672735+00 | 2cb906d7-9c2e-46d0-b449-93c122645e6a |         | 
+  62 |       3 |   4.00 | WIN      | SUCCESS | Match 185 Win                            | 2025-11-14 13:27:49.912645+00 | 8daa0ef7-363f-4bce-bd75-c1fcf31dfd59 |         | 
+  63 |       0 |   2.00 | FEE      | SUCCESS | Match 185 Fee                            | 2025-11-14 13:27:50.148054+00 | 4d434732-063a-494e-8035-07efc67aed0f |         | 
+  64 |       1 |  -2.00 | WITHDRAW | SUCCESS | Match 186 Loss                           | 2025-11-14 13:43:51.390876+00 | 598a7119-0698-4013-bf0b-f8a35a541dd3 |         | 
+  65 |       2 |  -2.00 | WITHDRAW | SUCCESS | Match 186 Loss                           | 2025-11-14 13:43:51.577104+00 | 261f83b1-109b-46ce-b6fe-9be90028bc7c |         | 
+  66 |       3 |   4.00 | WIN      | SUCCESS | Match 186 Win                            | 2025-11-14 13:43:51.756971+00 | 36878bdd-ba22-4c65-8adb-ce964f06ceb4 |         | 
+  67 |       0 |   2.00 | FEE      | SUCCESS | Match 186 Fee                            | 2025-11-14 13:43:51.932469+00 | 2bd4e0a4-1a4c-4bd6-90b6-2f14504dd44c |         | 
+  68 |       2 |  -2.00 | WITHDRAW | SUCCESS | Match 189 Loss                           | 2025-11-14 14:05:43.97274+00  | 1bc06590-7123-4896-bd00-47bfe7ea1d67 |         | 
+  69 |       3 |  -2.00 | WITHDRAW | SUCCESS | Match 189 Loss                           | 2025-11-14 14:05:44.15144+00  | 23754586-9647-4f8e-b2f8-b2bd73f6c29b |         | 
+  70 |       1 |   4.00 | WIN      | SUCCESS | Match 189 Win                            | 2025-11-14 14:05:44.333829+00 | 34c9db7b-b2ed-4426-aa82-5abb0e76469a |         | 
+  71 |       0 |   2.00 | FEE      | SUCCESS | Match 189 Fee                            | 2025-11-14 14:05:44.506116+00 | 23272834-8b1b-4c8a-bc49-05d19e3be21b |         | 
+  72 |       3 |  -2.00 | WITHDRAW | SUCCESS | Match 190 Loss                           | 2025-11-14 14:53:41.49577+00  | c4d1d04f-698e-4fe3-8f8e-e6deb137d8b2 |         | 
+  73 |       2 |  -2.00 | WITHDRAW | SUCCESS | Match 190 Loss                           | 2025-11-14 14:53:41.731433+00 | d905a817-17a1-4d24-9ad7-779033d235ec |         | 
+  74 |       1 |   4.00 | WIN      | SUCCESS | Match 190 Win                            | 2025-11-14 14:53:41.932609+00 | 6a80383e-415c-4fc7-a413-468f12c8a99a |         | 
+  75 |       0 |   2.00 | FEE      | SUCCESS | Match 190 Fee                            | 2025-11-14 14:53:42.138321+00 | ffec3b2b-bcae-45ba-a758-af02d6b87453 |         | 
+  76 |       2 |  -2.00 | WITHDRAW | SUCCESS | Match 191 Loss                           | 2025-11-14 16:42:47.658851+00 | 3abfdaca-3dec-4e4d-8a7f-972862da58bf |         | 
+  77 |       3 |  -2.00 | WITHDRAW | SUCCESS | Match 191 Loss                           | 2025-11-14 16:42:47.849866+00 | 374918fd-947c-4bbe-8a65-a7ef7defb646 |         | 
+  78 |       1 |   4.00 | WIN      | SUCCESS | Match 191 Win                            | 2025-11-14 16:42:48.029876+00 | 987aecd1-2675-4751-bb4d-76395cfae507 |         | 
+  79 |       0 |   2.00 | FEE      | SUCCESS | Match 191 Fee                            | 2025-11-14 16:42:48.20162+00  | dd7a6f0b-af15-4af1-998d-308328e4f2c1 |         | 
+  80 |       3 |  -2.00 | WITHDRAW | SUCCESS | Match 192 Loss                           | 2025-11-14 17:11:10.974512+00 | 62fd8f7c-093c-4026-8e80-0c4b57d4d91d |         | 
+  81 |       2 |  -2.00 | WITHDRAW | SUCCESS | Match 192 Loss                           | 2025-11-14 17:11:11.169407+00 | 07ad5fb5-3cbc-499b-9f86-32ce3746ce78 |         | 
+  82 |       1 |   4.00 | WIN      | SUCCESS | Match 192 Win                            | 2025-11-14 17:11:11.733104+00 | 77abdc79-fe27-4343-9fa6-8c1fc692a556 |         | 
+  83 |       0 |   2.00 | FEE      | SUCCESS | Match 192 Fee                            | 2025-11-14 17:11:12.310886+00 | 9b7f7e72-8557-43f3-8a28-d2d1893e7045 |         | 
+  84 |       1 |   3.00 | WIN      | SUCCESS | Match 202 Win (stake=2, players=2)       | 2025-11-14 21:20:37.422335+00 | 0501215c-623f-45ec-afc7-26dec8e456fe |         | 
+  85 |       0 |   1.00 | FEE      | SUCCESS | Match 202 Fee                            | 2025-11-14 21:20:37.589226+00 | de7effe5-c571-4715-ac4d-0f297aa75e74 |         | 
+  86 |       3 |   4.00 | WIN      | SUCCESS | Match 203 Win (stake=2, players=3)       | 2025-11-14 21:24:37.36687+00  | 9d8bff24-b57a-42a7-ad00-9739a3d94a57 |         | 
+  87 |       0 |   2.00 | FEE      | SUCCESS | Match 203 Fee                            | 2025-11-14 21:24:37.529178+00 | 67171cbc-c750-4b0d-8548-4006641d0bdb |         | 
+  88 |       3 |   4.00 | WIN      | SUCCESS | Match 204 win payout                     | 2025-11-14 23:47:17.388116+00 | 24fffe1b-d0ea-4840-b420-21c447131984 |         | 
+  89 |       1 |   2.00 | FEE      | SUCCESS | Match 204 system fee                     | 2025-11-14 23:47:17.577083+00 | 9914ee53-fe70-44a8-8f90-6ae3368dc3b7 |         | 
+  90 |       3 |   4.00 | WIN      | SUCCESS | Match 206 win                            | 2025-11-15 00:16:29.90774+00  | 40bcc5e4-7c0e-47bf-98da-9f36459c2bad |         | 
+  91 |       1 |   2.00 | FEE      | SUCCESS | Match 206 fee                            | 2025-11-15 00:16:30.072748+00 | 5e21c3a9-ec67-48de-b847-58a5f75f7bcb |         | 
+  92 |       2 |   4.00 | WIN      | SUCCESS | Match 208 win                            | 2025-11-15 00:20:21.993865+00 | 376f05ca-b429-4392-8ded-a4ab0e685f39 |         | 
+  93 |       1 |   2.00 | FEE      | SUCCESS | Match 208 fee                            | 2025-11-15 00:20:22.223617+00 | c5a52f1d-d96f-409d-8535-bc227e886c7c |         | 
+  94 |       1 |   4.00 | WIN      | SUCCESS | Match 210 win                            | 2025-11-16 15:23:34.568754+00 | 0df053b8-1092-4f6a-b077-0a113c454da6 |         | 
+  95 |       3 |   4.00 | WIN      | SUCCESS | Match 212 win                            | 2025-11-16 15:53:53.384283+00 | 07d7b1b1-4fe8-455c-8cf8-2735beb03936 |         | 
+  96 |       1 |   4.00 | WIN      | SUCCESS | Match 213 win                            | 2025-11-16 16:11:07.181839+00 | d6fe9a46-fd47-47e0-9d9d-e9250aaf9bb6 |         | 
+  97 |       1 |   4.00 | WIN      | SUCCESS | Match 214 win                            | 2025-11-16 16:40:21.385564+00 | 3b0f0758-2d4b-4aaa-8861-c65099de384f |         | 
+  98 |       1 |   4.00 | WIN      | SUCCESS | Match 216 win                            | 2025-11-16 16:52:05.733144+00 | b8132ef9-3cc9-4fb0-9ced-113c6d4bd20e |         | 
+  99 |   10015 |   2.00 | WIN      | SUCCESS | Match 222 win                            | 2025-11-17 16:28:07.374866+00 | ca7d685e-5281-4d28-850b-d65e8b4e18c5 |         | 
+ 100 |   10006 |   0.00 | WIN      | SUCCESS | Match 223 win                            | 2025-11-17 16:28:43.41872+00  | 33945391-23c0-4248-8577-6f378869f875 |         | 
+ 101 |       1 |   2.00 | WIN      | SUCCESS | Match 230 win                            | 2025-11-18 13:30:05.623143+00 | 9a446599-86ad-4496-b96f-9704986ae9a1 |         | 
+ 102 |   10005 |   2.00 | WIN      | SUCCESS | Match 231 win                            | 2025-11-18 13:31:32.756389+00 | 43e63cb1-8d28-44a9-9ba3-fe6f2bc05f36 |         | 
+ 103 |   10019 |   0.00 | WIN      | SUCCESS | Match 233 win                            | 2025-11-18 13:32:43.169675+00 | 849911ba-1a58-4428-b538-447038ab1b7c |         | 
+ 104 |   10014 |   2.00 | WIN      | SUCCESS | Match 243 win                            | 2025-11-19 17:25:35.531942+00 | fed8e785-d00b-4549-a6b3-e60641da1169 |         | 
+ 105 |   10020 |   0.00 | WIN      | SUCCESS | Match 249 win                            | 2025-11-26 14:57:21.400278+00 | 95666474-2c26-45eb-a0cf-54d5a2132207 |         | 
+ 106 |   10018 |   0.00 | WIN      | SUCCESS | Match 250 win                            | 2025-11-26 14:58:54.960785+00 | 77408676-5904-4983-aee1-be6c42db7345 |         | 
+ 107 |   10009 |   0.00 | WIN      | SUCCESS | Match 252 win                            | 2025-11-26 15:10:10.393304+00 | 64fee1e6-6384-4f7b-80fa-f7767250d005 |         | 
+ 108 |       2 |   0.00 | WIN      | SUCCESS | Match 253 win                            | 2025-11-26 15:10:36.315605+00 | f981c144-96a8-485d-a97e-0df428b24832 |         | 
+ 109 |       2 |   0.00 | WIN      | SUCCESS | Match 254 win                            | 2025-11-26 15:17:13.348277+00 | c37bd52f-4251-43b7-ac6c-5d6b1233f293 |         | 
+ 110 |   10009 |   0.00 | WIN      | SUCCESS | Match 255 win                            | 2025-11-26 15:17:56.943322+00 | e9589689-cc13-4b50-ad2c-ad4705fbd83e |         | 
+ 111 |       2 |   2.00 | WIN      | SUCCESS | Match 256 win                            | 2025-11-26 15:23:15.381506+00 | 715668e8-d376-42b1-b075-f7134686b431 |         | 
+ 112 |   10006 |   0.00 | WIN      | SUCCESS | Match 259 win                            | 2025-11-26 15:35:35.852235+00 | acf688ea-ccae-4192-9751-ad61b06c3b3e |         | 
+ 113 |       1 |   3.00 | WIN      | SUCCESS | Match 260 win                            | 2025-11-27 13:53:14.320939+00 | 14bb25f8-66fe-4a52-b2b8-1ebca302faf4 |         | 
+ 114 |       2 |   3.00 | WIN      | SUCCESS | Match 261 win                            | 2025-11-27 14:21:33.541242+00 | 5d8c7707-02ff-4322-8c6b-10af9147a67f |         | 
+ 115 |       1 |   1.00 | FEE      | SUCCESS | Match 261 fee                            | 2025-11-27 14:21:33.716912+00 | cb6814c9-77db-4c61-8325-967bddb139ba |         | 
+ 116 |       1 |   3.00 | WIN      | SUCCESS | Match 262 win                            | 2025-11-27 14:50:32.24723+00  | 31466c9a-afca-456a-9377-9204b6ff34bc |         | 
+ 117 |       1 |   2.00 | WIN      | SUCCESS | Match 263 win                            | 2025-11-27 15:25:37.795612+00 | 951bbd0b-9797-451e-baf7-e1a5b737c8f1 |         | 
+ 118 |       1 |   2.00 | WIN      | SUCCESS | Match 264 win                            | 2025-11-27 15:45:00.965336+00 | a83b66fb-b1a1-4d17-8170-3d3755b6c2d3 |         | 
+ 119 |       1 |   3.00 | WIN      | SUCCESS | Match 265 win                            | 2025-11-27 17:38:27.159401+00 | 7d14487c-e4fe-4293-93f8-c94cfaedd70f |         | 
+ 120 |   10005 |   0.00 | WIN      | SUCCESS | Match 266 win                            | 2025-11-27 17:46:50.04155+00  | c60ea73c-bcf2-4547-ad47-a86573b64f02 |         | 
+ 121 |       2 |   6.00 | WIN      | SUCCESS | Match 267 win                            | 2025-11-27 18:02:22.762877+00 | 6f7cdeb5-5029-4740-801f-a41022784e98 |         | 
+ 122 |       1 |   4.00 | WIN      | SUCCESS | Match 268 win                            | 2025-11-27 18:04:35.61426+00  | 9e05fa1e-6bae-4d03-b324-27b7dde80271 |         | 
+ 123 |       2 |   6.00 | WIN      | SUCCESS | Match 269 win                            | 2025-11-27 18:13:54.554625+00 | 1b1b298b-815d-4de7-8c2e-a93fa2c7d9d5 |         | 
+ 124 |       1 |   6.00 | WIN      | SUCCESS | Match 270 win                            | 2025-11-27 18:16:48.870649+00 | c80c2540-54dd-4eeb-87b6-47d5658afc1a |         | 
+ 125 |       1 |   3.00 | WIN      | SUCCESS | Match 271 win                            | 2025-11-27 19:09:25.544134+00 | 863eb57b-a204-4231-8be2-b5162f061547 |         | 
+ 126 |       1 |   6.00 | WIN      | SUCCESS | Match 272 win                            | 2025-11-27 19:10:56.004467+00 | a59f1f67-dc49-4601-9746-7310158db740 |         | 
+ 127 |       1 |   3.00 | WIN      | SUCCESS | Match 273 win                            | 2025-11-27 20:48:34.940061+00 | abf54abd-b104-45cb-8e2d-ae8344f2ff37 |         | 
+ 128 |   10019 |   0.00 | WIN      | SUCCESS | Match 274 win                            | 2025-11-27 20:49:51.508453+00 | 126b2c22-8d66-4b5a-b84d-ba79c5b08dbe |         | 
+ 129 |       2 |   3.00 | WIN      | SUCCESS | Match 275 win                            | 2025-11-28 12:52:18.650218+00 | 8674334c-3bb6-4473-ab2c-312477eb5706 |         | 
+ 130 |       1 |   3.00 | WIN      | SUCCESS | Match 276 win                            | 2025-11-28 12:52:50.450909+00 | 256dc527-acf9-4f7f-bf82-e17e7472f9f6 |         | 
+ 131 |       2 |   3.00 | WIN      | SUCCESS | Match 277 win                            | 2025-11-28 13:00:07.04255+00  | ddddc42e-3dd3-4350-9628-06d1f800ff7b |         | 
+ 132 |       2 |   3.00 | WIN      | SUCCESS | Match 278 win                            | 2025-11-28 15:55:16.864091+00 | fe68d9d3-e11d-462b-afea-1fe23f6961a8 |         | 
+ 133 |       2 |   3.00 | WIN      | SUCCESS | Match 279 win                            | 2025-11-28 15:58:22.151016+00 | 4c503078-5852-4a36-a053-c57144078613 |         | 
+ 134 |       2 |   3.00 | WIN      | SUCCESS | Match 280 win                            | 2025-11-28 15:59:54.771614+00 | 6ac2f04e-468d-41bf-ab9c-cb57b99c3840 |         | 
+ 135 |       2 |   3.00 | WIN      | SUCCESS | Match 281 win                            | 2025-11-28 16:03:36.019593+00 | 0b60f0d0-f830-41c1-ae9b-26ce50127e95 |         | 
+ 136 |       1 |   3.00 | WIN      | SUCCESS | Match 282 win                            | 2025-11-28 16:11:44.565411+00 | fda6ef51-ed1a-443d-b957-c8fea74b7bfd |         | 
+ 137 |       2 |   0.00 | WIN      | SUCCESS | Match 283 win                            | 2025-11-28 16:12:23.595746+00 | 47f73e8a-1759-43d6-ab13-5891f6c9571a |         | 
+ 138 |       1 |   0.00 | WIN      | SUCCESS | Match 284 win                            | 2025-11-28 16:13:03.346329+00 | e3055a67-cac4-4f32-91ac-813eebf37553 |         | 
+ 139 |       1 |   0.00 | WIN      | SUCCESS | Match 285 win                            | 2025-11-28 16:13:36.774897+00 | bdcc7c41-1dbb-4e23-ba54-a22841edf91b |         | 
+ 140 |       1 |   3.00 | WIN      | SUCCESS | Match 288 win                            | 2025-11-28 16:49:23.751553+00 | df5b366f-d124-449f-a456-4ef4972b2d50 |         | 
+ 141 |       2 |   0.00 | WIN      | SUCCESS | Match 289 win                            | 2025-11-28 16:49:51.26332+00  | dd97166a-fadd-4c3c-92bb-a3b4cae2254e |         | 
+ 142 |   10019 |   0.00 | WIN      | SUCCESS | Match 290 win                            | 2025-11-28 16:50:33.678533+00 | 8fde896b-2c94-47c2-b9c0-073bab4cb9bc |         | 
+ 143 |       2 |   0.00 | WIN      | SUCCESS | Match 291 win                            | 2025-11-28 16:55:46.242428+00 | 145da5ac-f6f7-4c24-ab73-8fee0d50f9f3 |         | 
+ 144 |       2 |   3.00 | WIN      | SUCCESS | Match 292 win                            | 2025-11-28 16:58:18.157677+00 | a8587d8f-4fff-4022-87b4-6f4c8f83c742 |         | 
+ 145 |       2 |   3.00 | WIN      | SUCCESS | Match 293 win                            | 2025-11-28 17:00:15.813467+00 | 62d8d8d0-3221-46cf-890e-83934d9529cf |         | 
+ 146 |       2 |   3.00 | WIN      | SUCCESS | Match 294 win                            | 2025-11-28 17:03:42.365427+00 | e8a1ba85-866c-4cdb-a6e7-bd0b828045d1 |         | 
+ 147 |       2 |   0.00 | WIN      | SUCCESS | Match 295 win                            | 2025-11-28 17:09:05.374334+00 | 25ea724f-f751-40ec-be78-ed837ebfa12f |         | 
+ 148 |       2 |   0.00 | WIN      | SUCCESS | Match 296 win                            | 2025-11-28 17:10:24.182346+00 | 82a67311-a17d-4161-92be-6ea1a999b857 |         | 
+ 149 |       2 |   0.00 | WIN      | SUCCESS | Match 297 win                            | 2025-11-28 17:36:45.853927+00 | 0e1fcd6e-87d9-495b-9997-79e0ba4e007e |         | 
+ 150 |       2 |   3.00 | WIN      | SUCCESS | Match 298 win                            | 2025-11-28 18:07:13.156554+00 | 9002814f-f3a4-4f5b-ab78-88fb039e24c1 |         | 
+ 151 |       2 |   0.00 | WIN      | SUCCESS | Match 299 win                            | 2025-11-28 18:08:36.579679+00 | 15953a95-7b16-4870-902d-93f6680ef392 |         | 
+ 152 |       2 |   3.00 | WIN      | SUCCESS | Match 300 win                            | 2025-11-28 18:26:57.192914+00 | 9c2c0c8a-c17b-4c39-ba6a-9ef129233939 |         | 
+ 153 |       1 |   3.00 | WIN      | SUCCESS | Match 301 win                            | 2025-11-28 18:31:44.143285+00 | 7bc2d8ea-77ac-43db-b4cb-9fd40049e76b |         | 
+ 154 |       1 |   0.00 | WIN      | SUCCESS | Match 303 win                            | 2025-11-28 19:43:23.327433+00 | 1225adb4-8691-43f2-b7cb-c06571198122 |         | 
+ 155 |       1 |   0.00 | WIN      | SUCCESS | Match 304 win                            | 2025-11-28 19:47:30.471287+00 | d6555296-d596-49dd-8cc7-291d6c39e3ef |         | 
+ 156 |       1 |   0.00 | WIN      | SUCCESS | Match 305 win                            | 2025-11-28 19:47:55.657333+00 | 24bebefc-5549-4634-9cce-011da4d064b3 |         | 
+ 157 |       1 |   0.00 | WIN      | SUCCESS | Match 306 win                            | 2025-11-28 19:49:07.463037+00 | 153da6b0-2a09-4a77-ac43-992f7f9bd7e5 |         | 
+ 158 |       1 |   0.00 | WIN      | SUCCESS | Match 307 win                            | 2025-11-28 19:49:36.712078+00 | b2a0e5d9-9c78-4772-b99a-8f350dcb4651 |         | 
+ 159 |       1 |   0.00 | WIN      | SUCCESS | Match 308 win                            | 2025-11-28 20:14:37.055216+00 | bdf2c92a-9ece-4267-9c0c-f4322ecff564 |         | 
+ 160 |       2 |   0.00 | WIN      | SUCCESS | Match 309 win                            | 2025-11-28 20:19:54.453484+00 | 34504f4c-f9b0-4120-8a29-f1fdc8e9d193 |         | 
+ 161 |       1 |   3.00 | WIN      | SUCCESS | Match 310 win                            | 2025-11-28 20:27:59.994439+00 | c0f9a3dc-cf7a-4b4e-92b9-671c2722e518 |         | 
+ 162 |       1 |   0.00 | WIN      | SUCCESS | Match 311 win                            | 2025-11-28 20:45:56.220591+00 | 56019ca2-b249-4400-9273-732b509a8806 |         | 
+ 163 |       2 |   0.00 | WIN      | SUCCESS | Match 312 win                            | 2025-11-28 20:51:30.343595+00 | e529eb5e-459b-4145-81dc-333b715f81e6 |         | 
+ 164 |       1 |   0.00 | WIN      | SUCCESS | Match 313 win                            | 2025-11-28 20:54:32.24043+00  | a8a5aaf3-8bab-4c0c-9395-810757d1b991 |         | 
+ 165 |       1 |   0.00 | WIN      | SUCCESS | Match 314 win                            | 2025-11-28 21:39:20.740634+00 | 4d757328-86af-424d-8456-7038981d52c3 |         | 
+ 166 |       2 |   3.00 | WIN      | SUCCESS | Match 315 win                            | 2025-11-28 21:40:05.963701+00 | d4eac5a6-f7c3-47a2-b043-b50c1533ccff |         | 
+ 167 |       2 |   0.00 | WIN      | SUCCESS | Match 316 win                            | 2025-11-28 21:41:08.843039+00 | c7915be7-6704-4c09-9443-9e994c55d2c1 |         | 
+ 168 |       2 |   0.00 | WIN      | SUCCESS | Match 317 win                            | 2025-11-28 21:42:44.575751+00 | 30958d91-ac7a-45b6-9e9a-733e6dc6e833 |         | 
+ 169 |       2 |   0.00 | WIN      | SUCCESS | Match 320 win                            | 2025-11-28 23:06:41.721134+00 | 0a356c61-cdf7-42e9-bb29-12eb1d3e019e |         | 
+ 170 |       2 |   3.00 | WIN      | SUCCESS | Match 324 win                            | 2025-11-29 16:34:12.640367+00 | b051cfaa-7c3d-4f5f-9169-51633c87b284 |         | 
+ 171 |   10008 |   0.00 | WIN      | SUCCESS | Match 325 win                            | 2025-11-30 08:21:03.242942+00 | 3ffa32d4-62cd-4450-a17e-ef6b1e410d45 |         | 
+ 172 |   10004 |   4.00 | WIN      | SUCCESS | Match 219 win                            | 2025-11-30 09:15:45.428607+00 | dcc20d81-866a-40a7-82e5-ccc303a781af |         | 
+ 173 |   10003 |   4.00 | WIN      | SUCCESS | Match 217 win                            | 2025-11-30 09:16:05.61323+00  | e913c8d1-c33e-4757-90d3-eaa0ce37a00e |         | 
+ 174 |   10018 |   0.00 | WIN      | SUCCESS | Match 326 win                            | 2025-11-30 11:06:46.946673+00 | c78896f7-991b-427c-976c-eedffc7b9138 |         | 
+ 175 |   10007 |   0.00 | WIN      | SUCCESS | Match 327 win                            | 2025-11-30 12:33:04.446634+00 | dcfe27b1-8443-4bc1-ba24-7ad89be78961 |         | 
+ 176 |       2 |   0.00 | WIN      | SUCCESS | Match 328 win                            | 2025-11-30 12:36:29.185878+00 | d8242b8a-6f9a-400a-abcf-2ed3672570ff |         | 
+ 177 |       1 |   0.00 | WIN      | SUCCESS | Match 329 win                            | 2025-11-30 12:50:02.168823+00 | 5afb4595-e1bc-4642-a631-d81e119aaea6 |         | 
+ 178 |       2 |   0.00 | WIN      | SUCCESS | Match 330 win                            | 2025-11-30 12:53:02.843775+00 | dadbbd1e-7504-4eee-afea-1bc0dbb0949b |         | 
+ 179 |   10015 |   0.00 | WIN      | SUCCESS | Match 331 win                            | 2025-11-30 13:02:03.506612+00 | a466f348-3974-4779-a773-4cd2bca15f1c |         | 
+ 180 |   10010 |   0.00 | WIN      | SUCCESS | Match 332 win                            | 2025-11-30 13:02:38.076881+00 | 6f96ac03-5341-43a6-b1e6-964ef85ffee2 |         | 
+ 181 |       2 |   6.00 | RECHARGE | PENDING |                                          | 2025-12-10 16:22:23.215217+00 |                                      |         | 
+ 182 |       2 |   6.00 | RECHARGE | PENDING |                                          | 2025-12-10 16:22:47.358331+00 |                                      |         | 
+ 183 |       2 |   6.00 | RECHARGE | PENDING |                                          | 2025-12-10 16:29:50.070251+00 |                                      |         | 
+(175 rows)
 
 
 ===== TABLE: matches =====
@@ -563,36 +568,36 @@ Triggers:
 Access method: heap
 
 
-  id   |    phone    |           email           |                                    password_hash                                    |      name       |  upi_id  |            description            | wallet_balance |   profile_image    |          created_at           |          updated_at           | is_agent | paypal_id 
--------+-------------+---------------------------+-------------------------------------------------------------------------------------+-----------------+----------+-----------------------------------+----------------+--------------------+-------------------------------+-------------------------------+----------+-----------
- 10016 | agent_10016 | agent_10016@system.local  | x                                                                                   | Agent 10016     |          |                                   |          99.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-17 10:49:14.328276+00 | f        | 
-     4 | 1234567890  | sridharc982@gmail.com     | $2b$12$StJg3yp7V/YpZTpP5IEFku5Qkl00JRRVS0zV81BSHf.JiaRkbTilK                        | sridharc98      |          |                                   |           0.00 | assets/default.png | 2025-10-24 20:23:32.421971+00 | 2025-10-24 21:35:20.763906+00 | f        | 
-     0 | 0000000000  | merchant@system.local     | system                                                                              | System Merchant |          | System auto-account for game fees |           0.00 | assets/default.png | 2025-11-09 21:58:35.505102+00 |                               | f        | 
- 10019 | agent_10019 | agent_10019@system.local  | x                                                                                   | Agent 10019     |          |                                   |          99.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-17 11:09:32.421644+00 | f        | 
- 10001 | agent_10001 | agent_10001@system.local  | x                                                                                   | Agent 10001     |          |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f        | 
- 10008 | agent_10008 | agent_10008@system.local  | x                                                                                   | Agent 10008     |          |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f        | 
- 10009 | agent_10009 | agent_10009@system.local  | x                                                                                   | Agent 10009     |          |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f        | 
- 10011 | agent_10011 | agent_10011@system.local  | x                                                                                   | Agent 10011     |          |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f        | 
- 10013 | agent_10013 | agent_10013@system.local  | x                                                                                   | Agent 10013     |          |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f        | 
- 10017 | agent_10017 | agent_10017@system.local  | x                                                                                   | Agent 10017     |          |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f        | 
- 10018 | agent_10018 | agent_10018@system.local  | x                                                                                   | Agent 10018     |          |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f        | 
- 10007 | agent_10007 | agent_10007@system.local  | x                                                                                   | Agent 10007     |          |                                   |          99.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 14:45:28.793083+00 | f        | 
- 10010 | agent_10010 | agent_10010@system.local  | x                                                                                   | Agent 10010     |          |                                   |          98.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 13:02:08.107258+00 | f        | 
- 10006 | agent_10006 | agent_10006@system.local  | x                                                                                   | Agent 10006     |          |                                   |          99.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 15:07:15.434487+00 | f        | 
- -1000 | bot_sharp   | bot_sharp@system.local    | x                                                                                   | Sharp (Bot)     |          |                                   |           0.00 | assets/default.png | 2025-10-24 17:59:47.083826+00 | 2025-11-17 09:50:32.169312+00 | t        | 
- -1001 | bot_crazy   | bot_crazy@system.local    | x                                                                                   | Crazy Boy (Bot) |          |                                   |           0.00 | assets/default.png | 2025-10-24 17:59:47.083826+00 | 2025-11-17 09:50:32.169312+00 | t        | 
- -1002 | bot_srtech  | bot_srtech@system.local   | x                                                                                   | SRTech Bot      |          |                                   |           0.00 | assets/default.png | 2025-10-24 17:59:47.083826+00 | 2025-11-17 09:50:32.169312+00 | t        | 
- 10002 | agent_10002 | agent_10002@system.local  | x                                                                                   | Agent 10002     |          |                                   |          99.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 16:39:01.810849+00 | f        | 
- 10020 | agent_10020 | agent_10020@system.local  | x                                                                                   | Agent 10020     |          |                                   |          98.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 13:27:33.375378+00 | f        | 
- 10014 | agent_10014 | agent_10014@system.local  | x                                                                                   | Agent 10014     |          |                                   |         101.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-19 17:25:35.517823+00 | f        | 
- 10004 | agent_10004 | agent_10004@system.local  | x                                                                                   | Agent 10004     |          |                                   |         102.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-30 09:15:45.406457+00 | f        | 
- 10003 | agent_10003 | agent_10003@system.local  | x                                                                                   | Agent 10003     |          |                                   |         103.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-30 09:16:05.593914+00 | f        | 
- 10005 | agent_10005 | agent_10005@system.local  | x                                                                                   | Agent 10005     |          |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-12-07 11:52:20.505661+00 | f        | 
- 10015 | agent_10015 | agent_10015@system.local  | x                                                                                   | Agent 10015     |          |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-26 15:24:15.393323+00 | f        | 
- 10012 | agent_10012 | agent_10012@system.local  | x                                                                                   | Agent 10012     |          |                                   |          96.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-12-07 11:52:20.505661+00 | f        | 
-     2 | 7200553957  | sri.christh@gmail.com     | $2b$12$/OUPYKpbwWGgf4fl8omyoOtvy4yCqmdGSFqAUqHZZerjd/9yzsSOO                        | sri.christh     | upi@hfcd | Something funny da i am. Do       |         429.00 | assets/default.png | 2025-10-24 19:54:42.301455+00 | 2025-12-09 15:21:37.195107+00 | f        | paythus
-     1 | 1234567899  | sri198528@gmail.com       | $bcrypt-sha256$v=2,t=2b,r=12$nDjIYGhe1ADxl/gU0prcIe$po.OfOzYEuh.W3hDhrdxlIDbUdaRira | sr1985!         |          |                                   |         475.00 | assets/default.png | 2025-10-24 18:17:57.089078+00 | 2025-11-29 16:33:56.292593+00 | f        | 
-     3 | 9360649151  | sridhar.christh@gmail.com | $2b$12$h/xnuXIEcqbkIJjY3vKij.qJ3XVAHyg/43UzylJGMAApWe1uOzGvi                        | sridhar.christh |          | something good                    |         485.00 | assets/default.png | 2025-10-24 20:02:29.997866+00 | 2025-12-05 23:09:04.802092+00 | f        | 
+  id   |    phone    |           email           |                                    password_hash                                    |      name       |     upi_id     |            description            | wallet_balance |   profile_image    |          created_at           |          updated_at           | is_agent | paypal_id 
+-------+-------------+---------------------------+-------------------------------------------------------------------------------------+-----------------+----------------+-----------------------------------+----------------+--------------------+-------------------------------+-------------------------------+----------+-----------
+ 10016 | agent_10016 | agent_10016@system.local  | x                                                                                   | Agent 10016     |                |                                   |          99.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-17 10:49:14.328276+00 | f        | 
+     4 | 1234567890  | sridharc982@gmail.com     | $2b$12$StJg3yp7V/YpZTpP5IEFku5Qkl00JRRVS0zV81BSHf.JiaRkbTilK                        | sridharc98      |                |                                   |           0.00 | assets/default.png | 2025-10-24 20:23:32.421971+00 | 2025-10-24 21:35:20.763906+00 | f        | 
+     0 | 0000000000  | merchant@system.local     | system                                                                              | System Merchant |                | System auto-account for game fees |           0.00 | assets/default.png | 2025-11-09 21:58:35.505102+00 |                               | f        | 
+ 10019 | agent_10019 | agent_10019@system.local  | x                                                                                   | Agent 10019     |                |                                   |          99.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-17 11:09:32.421644+00 | f        | 
+ 10001 | agent_10001 | agent_10001@system.local  | x                                                                                   | Agent 10001     |                |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f        | 
+ 10008 | agent_10008 | agent_10008@system.local  | x                                                                                   | Agent 10008     |                |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f        | 
+ 10009 | agent_10009 | agent_10009@system.local  | x                                                                                   | Agent 10009     |                |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f        | 
+ 10011 | agent_10011 | agent_10011@system.local  | x                                                                                   | Agent 10011     |                |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f        | 
+ 10013 | agent_10013 | agent_10013@system.local  | x                                                                                   | Agent 10013     |                |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f        | 
+ 10017 | agent_10017 | agent_10017@system.local  | x                                                                                   | Agent 10017     |                |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f        | 
+ 10018 | agent_10018 | agent_10018@system.local  | x                                                                                   | Agent 10018     |                |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  |                               | f        | 
+ 10007 | agent_10007 | agent_10007@system.local  | x                                                                                   | Agent 10007     |                |                                   |          99.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 14:45:28.793083+00 | f        | 
+ 10010 | agent_10010 | agent_10010@system.local  | x                                                                                   | Agent 10010     |                |                                   |          98.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 13:02:08.107258+00 | f        | 
+ 10006 | agent_10006 | agent_10006@system.local  | x                                                                                   | Agent 10006     |                |                                   |          99.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 15:07:15.434487+00 | f        | 
+ -1000 | bot_sharp   | bot_sharp@system.local    | x                                                                                   | Sharp (Bot)     |                |                                   |           0.00 | assets/default.png | 2025-10-24 17:59:47.083826+00 | 2025-11-17 09:50:32.169312+00 | t        | 
+ -1001 | bot_crazy   | bot_crazy@system.local    | x                                                                                   | Crazy Boy (Bot) |                |                                   |           0.00 | assets/default.png | 2025-10-24 17:59:47.083826+00 | 2025-11-17 09:50:32.169312+00 | t        | 
+ -1002 | bot_srtech  | bot_srtech@system.local   | x                                                                                   | SRTech Bot      |                |                                   |           0.00 | assets/default.png | 2025-10-24 17:59:47.083826+00 | 2025-11-17 09:50:32.169312+00 | t        | 
+ 10002 | agent_10002 | agent_10002@system.local  | x                                                                                   | Agent 10002     |                |                                   |          99.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 16:39:01.810849+00 | f        | 
+ 10020 | agent_10020 | agent_10020@system.local  | x                                                                                   | Agent 10020     |                |                                   |          98.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-18 13:27:33.375378+00 | f        | 
+ 10014 | agent_10014 | agent_10014@system.local  | x                                                                                   | Agent 10014     |                |                                   |         101.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-19 17:25:35.517823+00 | f        | 
+ 10004 | agent_10004 | agent_10004@system.local  | x                                                                                   | Agent 10004     |                |                                   |         102.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-30 09:15:45.406457+00 | f        | 
+ 10003 | agent_10003 | agent_10003@system.local  | x                                                                                   | Agent 10003     |                |                                   |         103.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-30 09:16:05.593914+00 | f        | 
+ 10005 | agent_10005 | agent_10005@system.local  | x                                                                                   | Agent 10005     |                |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-12-07 11:52:20.505661+00 | f        | 
+ 10015 | agent_10015 | agent_10015@system.local  | x                                                                                   | Agent 10015     |                |                                   |         100.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-11-26 15:24:15.393323+00 | f        | 
+ 10012 | agent_10012 | agent_10012@system.local  | x                                                                                   | Agent 10012     |                |                                   |          96.00 | assets/default.png | 2025-11-17 08:28:24.13366+00  | 2025-12-07 11:52:20.505661+00 | f        | 
+     2 | 7200553957  | sri.christh@gmail.com     | $2b$12$/OUPYKpbwWGgf4fl8omyoOtvy4yCqmdGSFqAUqHZZerjd/9yzsSOO                        | sri.christh     | 9360649151@ybl | Something funny da i am. Do       |         429.00 | assets/default.png | 2025-10-24 19:54:42.301455+00 | 2025-12-10 14:30:43.797358+00 | f        | paythus
+     1 | 1234567899  | sri198528@gmail.com       | $bcrypt-sha256$v=2,t=2b,r=12$nDjIYGhe1ADxl/gU0prcIe$po.OfOzYEuh.W3hDhrdxlIDbUdaRira | sr1985!         |                |                                   |         475.00 | assets/default.png | 2025-10-24 18:17:57.089078+00 | 2025-11-29 16:33:56.292593+00 | f        | 
+     3 | 9360649151  | sridhar.christh@gmail.com | $2b$12$h/xnuXIEcqbkIJjY3vKij.qJ3XVAHyg/43UzylJGMAApWe1uOzGvi                        | sridhar.christh |                | something good                    |         485.00 | assets/default.png | 2025-10-24 20:02:29.997866+00 | 2025-12-05 23:09:04.802092+00 | f        | 
 (28 rows)
 
 
@@ -1666,7 +1671,13 @@ Access method: heap
  855 | 7200553957 | 796236 | t    | 2025-12-09 18:18:13.963769+00 | 2025-12-09 18:13:10.902763+00
  856 | 7200553957 | 871954 | t    | 2025-12-09 18:20:46.963475+00 | 2025-12-09 18:15:45.567353+00
  857 | 7200553957 | 860143 | t    | 2025-12-09 18:23:06.971049+00 | 2025-12-09 18:18:05.640328+00
-(857 rows)
+ 858 | 7200553957 | 371769 | f    | 2025-12-10 14:33:30.592107+00 | 2025-12-10 14:28:28.564602+00
+ 859 | 7200553957 | 264368 | t    | 2025-12-10 14:33:31.794502+00 | 2025-12-10 14:28:29.658456+00
+ 860 | 7200553957 | 352545 | t    | 2025-12-10 14:35:23.671143+00 | 2025-12-10 14:30:23.6667+00
+ 861 | 7200553957 | 615477 | t    | 2025-12-10 15:42:18.774896+00 | 2025-12-10 15:37:16.978754+00
+ 862 | 7200553957 | 504668 | t    | 2025-12-10 16:15:22.741207+00 | 2025-12-10 16:10:21.106777+00
+ 863 | 7200553957 | 936200 | t    | 2025-12-10 16:33:52.581848+00 | 2025-12-10 16:28:50.98367+00
+(863 rows)
 
 
 ===== TABLE: stages =====
