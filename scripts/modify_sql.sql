@@ -1,53 +1,49 @@
 #!/bin/bash
 set -e
 
-echo "Starting PostgreSQL inspection and ROBOTS Army patch..."
+echo "Updating agent names to global-friendly names (60% Indian, 40% International)..."
 
 mkdir -p backup/db_inspect
+OUTPUT_FILE="backup/db_inspect/agent_name_update_log.txt"
 
-OUTPUT_FILE="backup/db_inspect/db_inspect_results.txt"
-> "$OUTPUT_FILE"
-
-echo "Ensuring ROBOTS Army exists in stakes table..." >> "$OUTPUT_FILE"
-
-psql "$DATABASE_URL" <<'SQL' >> "$OUTPUT_FILE" 2>&1
+psql "$DATABASE_URL" <<'SQL'
 DO $$
 BEGIN
-    -- Insert ROBOTS Army (2-player) into stakes table
-    IF NOT EXISTS (
-        SELECT 1 FROM stakes WHERE label = 'ROBOTS Army' AND players = 2
-    ) THEN
-        INSERT INTO stakes (stake_amount, entry_fee, winner_payout, players, label)
-        VALUES (0, 0, 0, 2, 'ROBOTS Army');
-        RAISE NOTICE 'Inserted ROBOTS Army (2P)';
-    ELSE
-        RAISE NOTICE 'ROBOTS Army (2P) already exists';
-    END IF;
+    -- ============================
+    -- Indian Names (60%)
+    -- ============================
 
-    -- Insert ROBOTS Army (3-player)
-    IF NOT EXISTS (
-        SELECT 1 FROM stakes WHERE label = 'ROBOTS Army' AND players = 3
-    ) THEN
-        INSERT INTO stakes (stake_amount, entry_fee, winner_payout, players, label)
-        VALUES (0, 0, 0, 3, 'ROBOTS Army');
-        RAISE NOTICE 'Inserted ROBOTS Army (3P)';
-    ELSE
-        RAISE NOTICE 'ROBOTS Army (3P) already exists';
-    END IF;
+    UPDATE public.users SET name = 'Aarav Sharma' WHERE id = 10001 AND name LIKE 'Agent%';
+    UPDATE public.users SET name = 'Priya Nair' WHERE id = 10003 AND name LIKE 'Agent%';
+    UPDATE public.users SET name = 'Rohan Mehta' WHERE id = 10004 AND name LIKE 'Agent%';
+    UPDATE public.users SET name = 'Kavya Iyer' WHERE id = 10006 AND name LIKE 'Agent%';
+    UPDATE public.users SET name = 'Aditya Verma' WHERE id = 10007 AND name LIKE 'Agent%';
+    UPDATE public.users SET name = 'Neha Reddy' WHERE id = 10008 AND name LIKE 'Agent%';
+    UPDATE public.users SET name = 'Suresh Babu' WHERE id = 10009 AND name LIKE 'Agent%';
+    UPDATE public.users SET name = 'Ananya Singh' WHERE id = 10010 AND name LIKE 'Agent%';
+    UPDATE public.users SET name = 'Karthik Menon' WHERE id = 10011 AND name LIKE 'Agent%';
+    UPDATE public.users SET name = 'Sneha Patil' WHERE id = 10012 AND name LIKE 'Agent%';
+    UPDATE public.users SET name = 'Varun Shetty' WHERE id = 10013 AND name LIKE 'Agent%';
+    UPDATE public.users SET name = 'Meera Joshi' WHERE id = 10014 AND name LIKE 'Agent%';
+
+    -- ============================
+    -- International Names (40%)
+    -- ============================
+
+    UPDATE public.users SET name = 'Daniel Costa' WHERE id = 10017 AND name LIKE 'Agent%';
+    UPDATE public.users SET name = 'Mia Svensson' WHERE id = 10018 AND name LIKE 'Agent%';
+    UPDATE public.users SET name = 'Jacob Müller' WHERE id = 10019 AND name LIKE 'Agent%';
+    UPDATE public.users SET name = 'Layla Ibrahim' WHERE id = 10020 AND name LIKE 'Agent%';
+
 END $$;
 SQL
 
-echo "ROBOTS Army stage patch applied." >> "$OUTPUT_FILE"
+echo "Agent name updates completed successfully."
 
-# Dump full DB
-TABLES=$(psql "$DATABASE_URL" -At -c "SELECT tablename FROM pg_tables WHERE schemaname='public';")
+echo "Exporting updated agent list..."
 
-for t in $TABLES; do
-  echo "===== TABLE: $t =====" >> "$OUTPUT_FILE"
-  psql "$DATABASE_URL" -c "\d+ \"$t\"" >> "$OUTPUT_FILE" 2>/dev/null
-  echo "" >> "$OUTPUT_FILE"
-  psql "$DATABASE_URL" -c "SELECT * FROM \"$t\";" >> "$OUTPUT_FILE" 2>/dev/null || echo "Skipped $t" >> "$OUTPUT_FILE"
-  echo "" >> "$OUTPUT_FILE"
-done
+psql "$DATABASE_URL" -c \
+"SELECT id, phone, email, name, wallet_balance FROM public.users WHERE id BETWEEN 10000 AND 10020 ORDER BY id;" \
+> "$OUTPUT_FILE"
 
-echo "Inspection completed and saved to $OUTPUT_FILE"
+echo "Export completed: $OUTPUT_FILE"
