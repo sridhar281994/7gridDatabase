@@ -1,0 +1,24 @@
+  id   |    phone    |          email           |      name      |                description                 | wallet_balance 
+-------+-------------+--------------------------+----------------+--------------------------------------------+----------------
+ 10001 | agent_10001 | agent_10001@system.local | Aarav Sharma   | Chess champ & coffee addict ☕♟️            |         100.00
+ 10002 | agent_10002 | agent_10002@system.local | Arjun Mehta    | Master of puzzles & chai enthusiast 🍵🧩   |          99.00
+ 10003 | agent_10003 | agent_10003@system.local | Priya Nair     | Spreadsheet queen & meme curator 😎📊      |         103.00
+ 10004 | agent_10004 | agent_10004@system.local | Rohan Mehta    | Code wizard & sneaker collector 👟💻       |         102.00
+ 10005 | agent_10005 | agent_10005@system.local | Sneha Iyer     | Queen of spreadsheets & coffee breaks ☕👑 |         100.00
+ 10006 | agent_10006 | agent_10006@system.local | Kavya Iyer     | Travel bug & food explorer 🌍🍕            |          99.00
+ 10007 | agent_10007 | agent_10007@system.local | Aditya Verma   | Guitar hero & karaoke star 🎸🎤            |          99.00
+ 10008 | agent_10008 | agent_10008@system.local | Neha Reddy     | Yoga lover & green tea addict 🧘‍♀️🍵        |         100.00
+ 10009 | agent_10009 | agent_10009@system.local | Suresh Babu    | Adventure seeker & pun master 🏞️😂          |         100.00
+ 10010 | agent_10010 | agent_10010@system.local | Ananya Singh   | Bookworm & midnight coder 📚🌙             |          98.00
+ 10011 | agent_10011 | agent_10011@system.local | Karthik Menon  | Soccer fan & chai lover ⚽🍵               |         100.00
+ 10012 | agent_10012 | agent_10012@system.local | Sneha Patil    | Painter & chocolate connoisseur 🎨🍫       |          96.00
+ 10013 | agent_10013 | agent_10013@system.local | Varun Shetty   | Tech geek & puzzle solver 🤖🧩             |         100.00
+ 10014 | agent_10014 | agent_10014@system.local | Meera Joshi    | Coffee enthusiast & meme queen ☕👑        |         101.00
+ 10015 | agent_10015 | agent_10015@system.local | Rohit Kulkarni | Spreadsheet ninja & meme curator 😎📊      |         100.00
+ 10016 | agent_10016 | agent_10016@system.local | Priya Desai    | Tech whisperer & chai lover 🍵💻           |          99.00
+ 10017 | agent_10017 | agent_10017@system.local | Daniel Costa   | Beach bum & travel junkie 🏖️✈️               |         100.00
+ 10018 | agent_10018 | agent_10018@system.local | Mia Svensson   | Coffeeholic & sunrise chaser ☕🌅          |         100.00
+ 10019 | agent_10019 | agent_10019@system.local | Jacob Müller   | Cyclist & code tinkerer 🚴‍♂️💻              |          99.00
+ 10020 | agent_10020 | agent_10020@system.local | Layla Ibrahim  | Music lover & snack connoisseur 🎶🍿       |          98.00
+(20 rows)
+
