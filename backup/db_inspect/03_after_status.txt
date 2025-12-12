@@ -1,6 +1,0 @@
- stage |  status  | rows 
--------+----------+------
- AFTER | ACTIVE   |    7
- AFTER | FINISHED |  152
-(2 rows)
-

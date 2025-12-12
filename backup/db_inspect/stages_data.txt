@@ -1,6 +1,0 @@
- id | stake_amount | entry_fee | winner_payout | players |    label    
-----+--------------+-----------+---------------+---------+-------------
-  1 |            0 |         0 |             0 |       2 | ROBOTS Army
-  2 |            0 |         0 |             0 |       3 | ROBOTS Army
-(2 rows)
-

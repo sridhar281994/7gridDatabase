@@ -1,9 +1,0 @@
-public|game_matches|table|spin_db_skow_user
-public|match_inspection|table|spin_db_skow_user
-public|match_results|table|spin_db_skow_user
-public|matches|table|spin_db_skow_user
-public|otps|table|spin_db_skow_user
-public|stages|table|spin_db_skow_user
-public|stakes|table|spin_db_skow_user
-public|users|table|spin_db_skow_user
-public|wallet_transactions|table|spin_db_skow_user
