@@ -1,0 +1,24 @@
+  id   |    phone    |          email           |      name      | description | wallet_balance 
+-------+-------------+--------------------------+----------------+-------------+----------------
+ 10001 | agent_10001 | agent_10001@system.local | Aarav Sharma   |             |         100.00
+ 10002 | agent_10002 | agent_10002@system.local | Arjun Mehta    |             |          99.00
+ 10003 | agent_10003 | agent_10003@system.local | Priya Nair     |             |         103.00
+ 10004 | agent_10004 | agent_10004@system.local | Rohan Mehta    |             |         102.00
+ 10005 | agent_10005 | agent_10005@system.local | Sneha Iyer     |             |         100.00
+ 10006 | agent_10006 | agent_10006@system.local | Kavya Iyer     |             |          99.00
+ 10007 | agent_10007 | agent_10007@system.local | Aditya Verma   |             |          99.00
+ 10008 | agent_10008 | agent_10008@system.local | Neha Reddy     |             |         100.00
+ 10009 | agent_10009 | agent_10009@system.local | Suresh Babu    |             |         100.00
+ 10010 | agent_10010 | agent_10010@system.local | Ananya Singh   |             |          98.00
+ 10011 | agent_10011 | agent_10011@system.local | Karthik Menon  |             |         100.00
+ 10012 | agent_10012 | agent_10012@system.local | Sneha Patil    |             |          96.00
+ 10013 | agent_10013 | agent_10013@system.local | Varun Shetty   |             |         100.00
+ 10014 | agent_10014 | agent_10014@system.local | Meera Joshi    |             |         101.00
+ 10015 | agent_10015 | agent_10015@system.local | Rohit Kulkarni |             |         100.00
+ 10016 | agent_10016 | agent_10016@system.local | Priya Desai    |             |          99.00
+ 10017 | agent_10017 | agent_10017@system.local | Daniel Costa   |             |         100.00
+ 10018 | agent_10018 | agent_10018@system.local | Mia Svensson   |             |         100.00
+ 10019 | agent_10019 | agent_10019@system.local | Jacob Müller   |             |          99.00
+ 10020 | agent_10020 | agent_10020@system.local | Layla Ibrahim  |             |          98.00
+(20 rows)
+
